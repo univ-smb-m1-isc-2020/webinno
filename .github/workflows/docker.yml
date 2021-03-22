@@ -19,7 +19,7 @@ jobs:
           java-version: '15.0.X'
 
       - name: Maven Build & Sonar analysis
-        run: mvn -B -e verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
