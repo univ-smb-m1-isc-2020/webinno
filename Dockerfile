@@ -1,4 +1,4 @@
-FROM openjdk:15-jre-slim
+FROM openjdk:11-jre-slim
 
 COPY ./target/NewYearsResolution-1.0-SNAPSHOT.jar .
 
