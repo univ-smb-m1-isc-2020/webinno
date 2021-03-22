@@ -25,7 +25,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: build docker
-          run: docker build -t webinno .
+        run: docker build -t webinno .
 
       - name: Push to GitHub Packages
         uses: docker/build-push-action@v1
