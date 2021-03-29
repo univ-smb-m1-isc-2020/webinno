@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Resolution</title>
+</head>
+<body>
+    <h1>Liste des résolutions</h1>
+
+    <table>
+        <tr>
+            <th>Id</th>
+            <th>Action</th>
+            <th>Frequence</th>
+            <th>NombreOcc</th>
+        </tr>
+
+        <tr th:each="resolution : ${resolutions}">
+            <td th:text="${resolution.id}">Id</td>
+            <td th:text="${resolution.action}">Action</td>
+            <td th:text="${resolution.frequence}">Frequence</td>
+            <td th:text="${resolution.nbOccurence}">NombreOcc</td>
+        </tr>
+    </table>
+</body>
+</html>
