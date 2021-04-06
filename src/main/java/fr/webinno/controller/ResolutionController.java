@@ -21,7 +21,7 @@ public class ResolutionController {
         this.resolutionService = resolutionService;
     }
 
-    @GetMapping(value="/resolutions")
+
     public List<String> resolutions(){
         List<String> l = resolutionService.getAllResolutions().stream().map(resolution -> resolution.getAction()).collect(toList());
         return l;

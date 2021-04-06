@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Accueil</title>
+</head>
+<body>
+    <h1>NewYearResolution</h1>
+    <h2>Résolutions populaires :</h2>
+
+    <form method="post" th:action="@{./addResolution}">
+        <input type="submit" value="+">
+    </form>
+
+    <ul th:each="resolution:${resolutions}">
+
+    </ul>
+</body>
+</html>
