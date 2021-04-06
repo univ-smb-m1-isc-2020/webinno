@@ -1,10 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Ajouter une résolution</title>
 </head>
 <body>
+    <h1>Ajouter une résolution :</h1>
 
+    <form method="post" th:action="@{accueil}">
+        <label for="titre">Titre</label>
+        <input type="text" placeholder="Votre titre" name="titre" id="titre">
+
+        <label for="description">Description</label>
+        <input type="text" placeholder="Description de la résolution" name="description" id="description">
+
+        <label for="nb">Fréquence</label>
+        <input type="number" id="nb" min="1" name="nb">
+        <label for="frequence">fois par</label>
+        <select name="frequence" id="frequence">
+            <option value="">Selectionner une fréquence</option>
+            <option value="jour">jour</option>
+            <option value="semaine">semaine</option>
+            <option value="mois">mois</option>
+            <option value="an">an</option>
+        </select>
+
+        <input type="submit" value="Ajouter la résolution">
+
+    </form>
 </body>
 </html>
