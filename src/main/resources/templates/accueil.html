@@ -13,6 +13,7 @@
     </form>
 
     <ul th:each="resolution:${resolutions}">
+        <li th:utext="${resolution.action}"></li>
 
     </ul>
 </body>
