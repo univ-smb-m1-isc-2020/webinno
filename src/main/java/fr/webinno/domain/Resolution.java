@@ -1,61 +1,48 @@
 package fr.webinno.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Resolution {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Long id;
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    private Long idResolution;
 
     private String action;
 
-    private String frequence;
-
-    private int nbOccurence;
+    @OneToMany( targetEntity = UserResolution.class, mappedBy = "resolution" )
+    private List<UserResolution> userResolutions = new ArrayList<>();
 
     public Resolution(){
 
     }
 
-    public Resolution(String action, String frequence, int nbOccurence) {
+    public Resolution(String action) {
         this.action = action;
-        this.frequence = frequence;
-        this.nbOccurence = nbOccurence;
     }
 
-    public Long getId(){
-        return id;
+    public Long getIdResolution(){
+        return idResolution;
     }
 
     public String getAction(){
         return action;
     }
 
-    public String getFrequence(){
-        return frequence;
-    }
-
-    public int getNbOccurence(){
-        return nbOccurence;
-    }
-
     public void setAction(String action) {
         this.action = action;
     }
 
-    public void setFrequence(String frequence) {
-        this.frequence = frequence;
+    public List<UserResolution> getUserResolutions() {
+        return userResolutions;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public String toString(){
+        String str = this.action + " [ ";
+
+        return str;
     }
 
-    public void setNbOccurence(int nbOccurence) {
-        this.nbOccurence = nbOccurence;
-    }
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ResolutionServiceImpl implements ResolutionService {
@@ -28,11 +29,16 @@ public class ResolutionServiceImpl implements ResolutionService {
         return resolutionList;
     }
 
+    @Override
+    public Optional<Resolution> getById(long idResolution) {
+        return resolutionRepository.findById(idResolution);
+    }
+
     @PostConstruct
     public void initialize(){
         if(resolutionRepository.findAll().isEmpty()){
-            resolutionRepository.saveAndFlush(new Resolution("Me lever à 8h","2 mois",0));
-            resolutionRepository.saveAndFlush(new Resolution("Me coucher avant 5h","4 semaine",0));
+            resolutionRepository.saveAndFlush(new Resolution("Me lever à 8h"));
+            resolutionRepository.saveAndFlush(new Resolution("Me coucher avant 5h"));
         }
     }
 }
