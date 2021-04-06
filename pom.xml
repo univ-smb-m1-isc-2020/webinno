@@ -162,21 +162,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <environmentVariables>
-                        <!-- Default config for vanilla install of a local postgresql -->
-                        <SPRING_DATASOURCE_URL>jdbc:postgresql://postgres:5432/db_webinno</SPRING_DATASOURCE_URL>
-                        <SPRING_DATASOURCE_USERNAME>webinno_root</SPRING_DATASOURCE_USERNAME>
-                        <SPRING_DATASOURCE_PASSWORD>Webinno123!</SPRING_DATASOURCE_PASSWORD>
-                        <SPRING_JPA_HIBERNATE_DDL_AUTO>update</SPRING_JPA_HIBERNATE_DDL_AUTO>
-                        <SPRING_JPA_DATABASE>POSTGRESQL</SPRING_JPA_DATABASE>
-                    </environmentVariables>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
