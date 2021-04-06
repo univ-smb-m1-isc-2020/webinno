@@ -4,6 +4,7 @@ import fr.webinno.domain.Resolution;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +21,15 @@ public class MainController {
         resolutions.add(new Resolution("Se coucher avant 23H", "1/jour", 1));
     }
 
-    @GetMapping("/accueil")
+    @PostMapping("/accueil")
     public String getResolutions(Model model){
+        System.out.println("accueil");
         model.addAttribute("resolutions", resolutions);
-        return "resolution";
+        return "accueil";
+    }
+
+    @PostMapping("/addResolution")
+    public String addResolution(Model model){
+        return "addResolution";
     }
 }
