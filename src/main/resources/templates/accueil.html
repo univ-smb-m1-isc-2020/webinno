@@ -13,8 +13,9 @@
     </form>
 
     <ul th:each="resolution:${resolutions}">
+        <a th:href="@{resolution/resolution.id}">
         <li th:utext="${resolution.action}"></li>
-
+        </a>
     </ul>
 </body>
 </html>

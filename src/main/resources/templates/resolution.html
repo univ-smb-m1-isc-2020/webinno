@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:utext="${resolution.titre}"></title>
+</head>
+<body>
+    <h1>NewYearResolution</h1>
+    <form>
+        <input type="submit">
+    </form>
+
+    <h2 th:utext="${resolution.titre}"></h2>
+    <p th:utext="${resolution.description}"></p>
+    <h3>Fréquence</h3>
+    <h3>Notre Fréquence</h3>
+</body>
+</html>
