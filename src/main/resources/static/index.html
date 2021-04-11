@@ -1,12 +1,25 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Spring boot index</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="UTF-8">
+    <title>Connexion</title>
 </head>
-
 <body>
-    <p>Page hello : <a href="/hello">here</a></p>
-    <a href="users">Show users</a>
+    <h1>NewYearResolution</h1>
+
+    <form method="post" th:action="@{/login}" th:objet="${loginForm}" action="#">
+        <label for="userName">User name</label>
+        <input type="text" name="userName" id="userName" placeholder="Your Login">
+
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" placeholder="Your Password">
+
+        <input type="submit" value="Se connecter">
+
+        <h1>Voir pour le social login</h1>
+
+        <input type="checkbox" name="rememberMe" id="rememberMe">
+        <label for="rememberMe">Remember me</label>
+    </form>
 </body>
 </html>

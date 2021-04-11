@@ -34,6 +34,11 @@ public class UserServiceImpl implements UserService{
         return userRepository.findById(idUser);
     }
 
+    @Override
+    public User getUserByName(String name) {
+        return userRepository.findOneByName(name);
+    }
+
     @PostConstruct
     public void initialize(){
         if(userRepository.findAll().isEmpty()){

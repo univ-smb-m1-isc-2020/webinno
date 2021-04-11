@@ -3,6 +3,7 @@ package fr.webinno.controller;
 import fr.webinno.domain.Frequence;
 import fr.webinno.domain.UserResolution;
 import fr.webinno.form.AddUserResolutionForm;
+import fr.webinno.form.LoginForm;
 import fr.webinno.form.SelectResolutionForm;
 import fr.webinno.service.HistoriqueService;
 import fr.webinno.service.ResolutionService;
@@ -29,6 +30,27 @@ public class ControllerApp {
         this.userService = userService;
         this.userResolutionService = userResolutionService;
         this.historiqueService = historiqueService;
+    }
+
+    @PostMapping("/login")
+    public String login(@ModelAttribute LoginForm loginForm, Model model){
+        //TODO récupérer la checkbox remenberMe
+
+        // 1 - Récupération donnée du formulaire
+        var user = userService.getUserByName(loginForm.getUserName());
+        var password = loginForm.getPassword();
+
+        // 2 - Vérification pour la connexion
+        if(user.login(password)){
+
+            // 3 - Redirection
+            var resolutions = resolutionService.getAllResolutions();
+            model.addAttribute("resolutions", resolutions);
+            return "accueil";
+        }
+        else{
+            return "index";
+        }
     }
 
     /*

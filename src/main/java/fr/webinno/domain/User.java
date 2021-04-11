@@ -96,4 +96,10 @@ public class User {
         return str;
     }
 
+    public boolean login(String password){
+        if(this.password == password){
+            return true;
+        }
+        return false;
+    }
 }
