@@ -155,7 +155,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fr.webinno.App</mainClass>
+                            <mainClass>fr.webinno.web.SocialLoginApplication</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
