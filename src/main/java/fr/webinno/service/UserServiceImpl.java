@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService{
     @PostConstruct
     public void initialize(){
         if(userRepository.findAll().isEmpty()){
-            userRepository.saveAndFlush(new User("Kistchminyof", "Stephan", "stephank51@gmail.com", "MyPassword123"));
+            userRepository.saveAndFlush(new User("Kitschminyof", "Stephan", "stephank51@gmail.com", "MyPassword123"));
             userRepository.saveAndFlush(new User("Gallet", "Benjamin", "benjamin.gallet@gmail.com", "123456789"));
         }
     }

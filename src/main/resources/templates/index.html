@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion</title>
+    <base href="/"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <h1>NewYearResolution</h1>
+
+    <form method="post" th:action="@{/login}" th:objet="${loginForm}">
+        <label for="userName">User name</label>
+        <input type="text" name="userName" id="userName" placeholder="Your Login">
+
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" placeholder="Your Password">
+
+        <input type="submit" value="Se connecter">
+
+        <input type="checkbox" name="rememberMe" id="rememberMe">
+        <label for="rememberMe">Remember me</label>
+    </form>
+
+    <div class="container unauthenticated">
+        Login With Facebook: <a href="/login">click here</a>
+    </div>
+
+    <div class="container authenticated" style="display:none">
+        Logged into Facebook as: <span id="user"></span>
+    </div>
+
+
+
+    <script type="text/javascript">
+        $.get("/user", function(data) {
+            $("#user").html(data.userAuthentication.details.name);
+            $(".unauthenticated").hide()
+            $(".authenticated").show()
+        });
+
+    </script>
+</body>
+</html>
