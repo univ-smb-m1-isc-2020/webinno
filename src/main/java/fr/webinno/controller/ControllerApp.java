@@ -38,11 +38,6 @@ public class ControllerApp {
         return "index";
     }
 
-    @GetMapping("/user")
-    public String user(){
-        System.out.println("==================================================USER==================================");
-        return "hello";
-    }
 
 
     @PostMapping("/login")
