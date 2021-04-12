@@ -1,5 +1,6 @@
 package fr.webinno.controller;
 
+import fr.webinno.domain.User;
 import fr.webinno.domain.UserResolution;
 import fr.webinno.form.AddUserResolutionForm;
 import fr.webinno.form.LoginForm;
@@ -45,19 +46,20 @@ public class ControllerApp {
 
     @PostMapping("/tryLogin")
     public String tryLogin(@ModelAttribute LoginForm loginForm, Model model){
-        //TODO récupérer la checkbox remenberMe
-
-        System.out.println("USERNAME : " +loginForm.getUserName());
-        System.out.println("PASSWORD : " +loginForm.getPassword());
+        System.out.println("======================TRY LOGIN===================================");
 
         // 1 - Récupération donnée du formulaire
         var user = userService.getUserByName(loginForm.getUserName());
         var password = loginForm.getPassword();
 
+        System.out.println("NAME :" +loginForm.getUserName());
+        System.out.println("PWD :" +loginForm.getPassword());
+        System.out.println("USER = " + user);
+
+
         if(user == null){
             return index(model);
         }
-        System.out.println("TEST USER" +user);
 
         // 2 - Vérification pour la connexion
         if(user.login(password)){
@@ -65,7 +67,7 @@ public class ControllerApp {
             // 3 - Redirection
             var resolutions = resolutionService.getAllResolutions();
             model.addAttribute("resolutions", resolutions);
-            return users(model);
+            return user(model, user);
         }
         else{
             System.out.println("=============================LOGIN PAS OK=====================================");
@@ -94,6 +96,15 @@ public class ControllerApp {
 
         model.addAttribute("userForm", new UserForm());
         return "users";
+    }
+
+    public String user(Model model, User user){
+        model.addAttribute("user", user);
+
+        var user_resolutions = userResolutionService.getAllUserResolutionByUser(user);
+        model.addAttribute("user_resolutions", user_resolutions);
+
+        return "user";
     }
 
     /*
