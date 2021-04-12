@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Connexion</title>
+    <base href="/"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <h1>NewYearResolution</h1>
+
+    <form method="post" th:action="@{/tryLogin}" th:objet="${loginForm}">
+        <label for="userName">User name</label>
+        <input type="text" name="userName" id="userName" placeholder="Your Login">
+
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" placeholder="Your Password">
+
+        <input type="submit" value="Se connecter">
+
+        <input type="checkbox" name="rememberMe" id="rememberMe">
+        <label for="rememberMe">Remember me</label>
+    </form>
+</body>
+</html>

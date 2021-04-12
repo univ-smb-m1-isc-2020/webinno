@@ -1,11 +1,9 @@
 package fr.webinno.repository;
 
-import fr.webinno.domain.Resolution;
-import fr.webinno.domain.User;
+import fr.webinno.domain.Historique;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ResolutionRepository extends JpaRepository<Resolution, Long>{
-
+public interface HistoriqueRepository extends JpaRepository<Historique, Long> {
 }

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+</head>
+<body>
+    <div>
+        <h1>User :</h1>
+        <p th:text="${user.name}"></p>
+        <p th:text="${user.surname}"></p>
+        <p th:text="${user.mail}"></p>
+    </div>
+
+    <div>
+        <h1>Liste de ses résolutions :</h1>
+        <table>
+            <tr>
+                <th>Action</th>
+                <th>Frequence</th>
+                <th>Nb_occurences</th>
+            </tr>
+
+            <tr th:each="user_resolution : ${user_resolutions}">
+                <td th:text="${user_resolution.resolution.action}" :>Action</td>
+                <td th:text="${user_resolution.frequence}">Frequence</td>
+                <td th:text="${user_resolution.nbOccurence}">Nb_occurences</td>
+            </tr>
+        </table>
+    </div>
+
+    <div>
+        <h1>Ajouter une nouvelle résolution :</h1>
+        <table>
+            <tr>
+                <th>Action</th>
+                <th>Button</th>
+            </tr>
+
+            <tr th:each="resolution : ${resolutions}">
+                <td th:text="${resolution.action}">Action</td>
+                <td>
+                    <form action="#" th:action="@{/addUserResolutionForm}" th:object="${selectResolutionForm}" method="post">
+                        <input type="hidden" th:value="${user.idUser}" name="idUser"/>
+                        <input type="hidden" th:value="${resolution.idResolution}" name="idResolution"/>
+                        <input th:type="submit" value="Submit">
+                    </form>
+                </td>
+
+            </tr>
+        </table>
+    </div>
+
+</body>
+</html>
