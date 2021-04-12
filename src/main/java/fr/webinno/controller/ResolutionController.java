@@ -35,4 +35,14 @@ public class ResolutionController {
         return "resolution";
     }
 
+    @GetMapping(value="/signin")
+    public String signin(){
+        return "Google sign-in";
+    }
+
+    @GetMapping(value = "/")
+    public String index(){
+        return "index";
+    }
+
 }
