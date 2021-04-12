@@ -40,8 +40,8 @@ public class ControllerApp {
 
 
 
-    @PostMapping("/login")
-    public String login(@ModelAttribute LoginForm loginForm, Model model){
+    @PostMapping("/tryLogin")
+    public String tryLogin(@ModelAttribute LoginForm loginForm, Model model){
         //TODO récupérer la checkbox remenberMe
 
         System.out.println("USERNAME : " +loginForm.getUserName());
@@ -58,13 +58,14 @@ public class ControllerApp {
 
         // 2 - Vérification pour la connexion
         if(user.login(password)){
-
+            System.out.println("=====================LOGIN OK==============================");
             // 3 - Redirection
             var resolutions = resolutionService.getAllResolutions();
             model.addAttribute("resolutions", resolutions);
             return users(model);
         }
         else{
+            System.out.println("=============================LOGIN PAS OK=====================================");
             return index(model);
         }
     }

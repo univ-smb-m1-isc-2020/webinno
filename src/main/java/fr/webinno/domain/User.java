@@ -92,12 +92,13 @@ public class User {
                 " name : " + name +
                 " surname : " + surname +
                 " email : " + mail +
-                " resolutions : ";
+                " password : " + password +
+                " resolutions : " + "todo";
         return str;
     }
 
-    public boolean login(String password){
-        if(this.password == password){
+    public boolean login(String passwordTest){
+        if(this.password.compareTo(passwordTest) == 0){
             return true;
         }
         return false;

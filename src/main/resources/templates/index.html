@@ -11,7 +11,7 @@
 <body>
     <h1>NewYearResolution</h1>
 
-    <form method="post" th:action="@{/login}" th:objet="${loginForm}">
+    <form method="post" th:action="@{/tryLogin}" th:objet="${loginForm}">
         <label for="userName">User name</label>
         <input type="text" name="userName" id="userName" placeholder="Your Login">
 
@@ -23,24 +23,5 @@
         <input type="checkbox" name="rememberMe" id="rememberMe">
         <label for="rememberMe">Remember me</label>
     </form>
-
-    <div class="container unauthenticated">
-        Login With Facebook: <a href="/login">click here</a>
-    </div>
-
-    <div class="container authenticated" style="display:none">
-        Logged into Facebook as: <span id="user"></span>
-    </div>
-
-
-
-    <script type="text/javascript">
-        $.get("/user", function(data) {
-            $("#user").html(data.userAuthentication.details.name);
-            $(".unauthenticated").hide()
-            $(".authenticated").show()
-        });
-
-    </script>
 </body>
 </html>
