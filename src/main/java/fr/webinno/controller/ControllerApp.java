@@ -1,6 +1,5 @@
 package fr.webinno.controller;
 
-import fr.webinno.domain.Frequence;
 import fr.webinno.domain.UserResolution;
 import fr.webinno.form.AddUserResolutionForm;
 import fr.webinno.form.LoginForm;
@@ -35,7 +34,7 @@ public class ControllerApp {
     @GetMapping("*")
     public String index(Model model){
         model.addAttribute(new LoginForm());
-        return "index";
+        return "login";
     }
 
 
@@ -104,7 +103,7 @@ public class ControllerApp {
         //2 - Vérification si trouvé
         if(!user.isPresent()){
             System.out.println("Utilisateur non trouvé");
-            return "index";
+            return "login";
         }
         else{
             model.addAttribute("user", user.get());
@@ -136,7 +135,7 @@ public class ControllerApp {
         if(!resolution.isPresent()){
             System.err.println("[ControllerApp] /addResolution Resolution non trouvé");
             //TODO traitement err
-            return "index";
+            return "login";
         }
 
         //2 - Récupération de l'user
@@ -144,7 +143,7 @@ public class ControllerApp {
         if(!user.isPresent()){
             //TODO error
             System.err.println("[ControllerApp] /addResolution, error user not find");
-            return "index";
+            return "login";
         }
 
         //3 - Envoi data
@@ -162,14 +161,14 @@ public class ControllerApp {
         var user = userService.getUserById(addUserResolutionForm.getIdUser());
         if(!user.isPresent()){
             System.err.println("[ControllerApp] /addUserResolution, user not found !");
-            return "index";
+            return "login";
         }
 
         // 2 - Récupération de la résolution
         var resolution = resolutionService.getById(addUserResolutionForm.getIdResolution());
         if(!resolution.isPresent()){
             System.err.println("[ControllerApp] /addUserResolution, resolution not found !");
-            return "index";
+            return "login";
         }
 
         // 3 - Création de l'UserResolution
