@@ -1,11 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Accueil</title>
 </head>
 <body>
+<header>
+    <h1>NewYearResolution</h1>
+    <a th:href="@{/login}">Sign in</a>
+</header>
 
+
+<h1>Liste des résolutions</h1>
+
+<table>
+    <tr>
+        <th>Id</th>
+        <th>Action</th>
+        <th>Nombre d'inscrit</th>
+        <th>Fréquence</th>
+        <th>Pourcentage de réussite sur la dernière période</th>
+    </tr>
+
+    <tr th:each="resolution : ${resolutions}">
+        <td th:text="${resolution.idResolution}">IdResolution</td>
+        <td th:text="${resolution.action}">Action</td>
+        <td th:text="${effectif.get(resolution.idResolution)}">NbInscrits</td>
+        <td th:text="${frequence.get(resolution.idResolution)}">Freq</td>
+        <td th:text="${pourcentage.get(resolution.idResolution)}">Pourcentage</td>
+
+    </tr>
+</table>
 
 </body>
 </html>

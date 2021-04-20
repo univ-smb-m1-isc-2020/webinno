@@ -1,9 +1,9 @@
 package fr.webinno.domain;
 
+import org.joda.time.DateTime;
+
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 public class Historique {
@@ -18,4 +18,15 @@ public class Historique {
     @ManyToOne @JoinColumn(name="idUserResolution", nullable = false)
     private UserResolution userResolution;
 
+    public Date getDate() {
+        return date;
+    }
+
+    public boolean isDone() {
+        return done;
+    }
+
+    public long getIdHistorique() {
+        return idHistorique;
+    }
 }

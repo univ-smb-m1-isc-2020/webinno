@@ -1,6 +1,6 @@
 package fr.webinno.controller;
 
-import fr.webinno.domain.UserResolution;
+import fr.webinno.domain.*;
 import fr.webinno.form.AddUserResolutionForm;
 import fr.webinno.form.LoginForm;
 import fr.webinno.form.SelectResolutionForm;
@@ -9,12 +9,18 @@ import fr.webinno.service.ResolutionService;
 import fr.webinno.service.UserResolutionService;
 import fr.webinno.service.UserService;
 import fr.webinno.form.UserForm;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.*;
 
 @Controller
 public class ControllerApp {
@@ -33,6 +39,134 @@ public class ControllerApp {
 
     @GetMapping("*")
     public String index(Model model){
+        Map userResolutions = new HashMap();
+        Map effectif = new HashMap();
+        Map frequence = new HashMap();
+
+        //Pour le pourcentage
+        //recup chaque user
+            //recup l'historique de chaque user
+                //regarder si l'historique au moins eqivalent à la fréquence
+                //si oui
+                    //cpt++ pour cette résolution
+                //sinon
+                    //rien
+            //ajouter le cpt/nbuser de la résolution dans le map(idResolution, cpt/effictif.get(i));
+
+        Map pourcentage = new HashMap();
+
+        List<Resolution> resolutions = resolutionService.getAllResolutions();
+        List<User> users = userService.getAllUsers();
+        for(int i=0;i<resolutions.size();i++){
+
+            List<UserResolution> res = userResolutionService.getAllUserResolutionByResolution(resolutions.get(i));
+            userResolutions.put(resolutions.get(i).getIdResolution(),res);
+            effectif.put(resolutions.get(i).getIdResolution(),res.size());
+            if(res.size() > 0){
+                String freq = res.get(0).getNbOccurence() + " fois / " + res.get(0).getFrequence();
+                frequence.put(resolutions.get(i).getIdResolution(),freq.toLowerCase(Locale.ROOT));
+            }else {
+                frequence.put(resolutions.get(i).getIdResolution(), 0);
+            }
+
+            //System.err.println(res.get(0).getHistoriques().size());
+
+        }
+        ////////////////////
+        //TEST POURCENTAGE// (sur une résolution)
+        ////////////////////
+
+        for(int k=0;k<resolutions.size();k++) {
+            //1- on recup la résolution
+            Resolution r = resolutions.get(k);
+
+            //2- on recup les user-resolution de la resolution
+            List<UserResolution> ur = userResolutionService.getAllUserResolutionByResolution(r);
+            System.err.println(r);
+            //3- on recup la fréquence (jour/mois/année) pour connaitre la période sur laquelle on regarde la réussite
+            Frequence freq = ur.get(0).getFrequence();
+            //4- on recup le nombre d'occurence au dela duquel on a réussit
+            int occurence = ur.get(0).getNbOccurence();
+
+            //5- on recupère la date du jour et on fait la liste des jours à regarder en fonction de la frequence
+            DateTime date = new DateTime();
+
+            List<String> dates = new ArrayList<String>();
+            System.err.println(date);
+            System.err.println(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+
+            if (freq == Frequence.JOUR) {
+
+                dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+
+            } else if (freq == Frequence.SEMAINE) {
+                dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+
+                int days = Days.daysBetween(date, date.minusWeeks(1)).getDays();
+                for (int i = days + 1; i < 0; i++) {
+                    date = date.minusDays(1);
+                    dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                }
+
+            } else if (freq == Frequence.MOIS) {
+                dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                int days = Days.daysBetween(date, date.minusMonths(1)).getDays();
+                for (int i = days + 1; i < 0; i++) {
+                    date = date.minusDays(1);
+                    dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                }
+
+            } else if (freq == Frequence.ANNEE) {
+                dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                int days = Days.daysBetween(date, date.minusYears(1)).getDays();
+                for (int i = days + 1; i < 0; i++) {
+                    date = date.minusDays(1);
+                    dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                }
+            }
+            System.err.println(dates.toString());
+
+            //5- on recup les historiques de chaque personnes
+            int nbReussit = 0;
+            int nbTotal = 0;
+            for (int i = 0; i < ur.size(); i++) {
+                List<Historique> historique = ur.get(i).getHistoriques();
+                //6- on regarde dans l'historique si valide dans la dernière periode
+                int cptOccur = 0;
+                for (int j = 0; j < historique.size(); j++) {
+                    DateTime db = new DateTime(historique.get(j).getDate());
+                    System.out.println(db.getDayOfMonth() + "-" + db.getMonthOfYear() + "-" + db.getYear());
+                    if (dates.contains(db.getDayOfMonth() + "-" + db.getMonthOfYear() + "-" + db.getYear())) {
+                        System.err.println(db);
+                        if (historique.get(j).isDone()) {
+                            cptOccur++;
+                            System.out.println("DONE");
+                        }
+
+                    }
+                }
+                nbTotal++;
+                if (cptOccur >= occurence) {
+                    nbReussit++;
+                }
+            }
+
+            System.err.println(nbReussit);
+            System.err.println(nbTotal);
+            System.out.println((float) nbReussit / nbTotal * 100.0);
+            String p = ""+((float) nbReussit / nbTotal * 100.0)+"% (Du "+dates.get(dates.size()-1)+" au "+dates.get(0)+")";
+            pourcentage.put(r.getIdResolution(),p);
+        }
+        //System.err.println(ur.get(0).getHistoriques().toString());
+        //System.err.println(ur.get(0).getUser().getName());
+        //System.err.println(ur.get(0).getHistoriques().get(0).getDate());
+
+
+        model.addAttribute("frequence",frequence);
+        model.addAttribute("userResolutions",userResolutions);
+        model.addAttribute("effectif",effectif);
+        model.addAttribute("resolutions",resolutions);
+        model.addAttribute("pourcentage",pourcentage);
         return "index";
     }
 
