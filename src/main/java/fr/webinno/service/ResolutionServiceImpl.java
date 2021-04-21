@@ -1,8 +1,16 @@
 package fr.webinno.service;
 
+import fr.webinno.domain.Frequence;
 import fr.webinno.domain.Resolution;
+import fr.webinno.domain.User;
+import fr.webinno.domain.UserResolution;
 import fr.webinno.repository.ResolutionRepository;
+import fr.webinno.repository.UserResolutionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -34,11 +42,13 @@ public class ResolutionServiceImpl implements ResolutionService {
         return resolutionRepository.findById(idResolution);
     }
 
+
+
     @PostConstruct
     public void initialize(){
         if(resolutionRepository.findAll().isEmpty()){
-            resolutionRepository.saveAndFlush(new Resolution("Me lever à 8h"));
-            resolutionRepository.saveAndFlush(new Resolution("Me coucher avant 5h"));
+            resolutionRepository.saveAndFlush(new Resolution("Me lever à 8h", Frequence.SEMAINE,3));
+            resolutionRepository.saveAndFlush(new Resolution("Me coucher avant 5h", Frequence.JOUR,1));
         }
     }
 }

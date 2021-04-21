@@ -1,14 +1,11 @@
 package fr.webinno.controller;
 
 import fr.webinno.domain.*;
-import fr.webinno.form.AddUserResolutionForm;
-import fr.webinno.form.LoginForm;
-import fr.webinno.form.SelectResolutionForm;
+import fr.webinno.form.*;
 import fr.webinno.service.HistoriqueService;
 import fr.webinno.service.ResolutionService;
 import fr.webinno.service.UserResolutionService;
 import fr.webinno.service.UserService;
-import fr.webinno.form.UserForm;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 public class ControllerApp {
@@ -82,18 +80,18 @@ public class ControllerApp {
 
             //2- on recup les user-resolution de la resolution
             List<UserResolution> ur = userResolutionService.getAllUserResolutionByResolution(r);
-            System.err.println(r);
+            //System.err.println(r);
             //3- on recup la fréquence (jour/mois/année) pour connaitre la période sur laquelle on regarde la réussite
-            Frequence freq = ur.get(0).getFrequence();
+            Frequence freq = r.getFrequence();
             //4- on recup le nombre d'occurence au dela duquel on a réussit
-            int occurence = ur.get(0).getNbOccurence();
+            int occurence = r.getNbOccurence();
 
             //5- on recupère la date du jour et on fait la liste des jours à regarder en fonction de la frequence
             DateTime date = new DateTime();
 
             List<String> dates = new ArrayList<String>();
-            System.err.println(date);
-            System.err.println(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+            //System.err.println(date);
+            //System.err.println(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
 
             if (freq == Frequence.JOUR) {
 
@@ -124,7 +122,7 @@ public class ControllerApp {
                     dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
                 }
             }
-            System.err.println(dates.toString());
+            //System.err.println(dates.toString());
 
             //5- on recup les historiques de chaque personnes
             int nbReussit = 0;
@@ -135,12 +133,12 @@ public class ControllerApp {
                 int cptOccur = 0;
                 for (int j = 0; j < historique.size(); j++) {
                     DateTime db = new DateTime(historique.get(j).getDate());
-                    System.out.println(db.getDayOfMonth() + "-" + db.getMonthOfYear() + "-" + db.getYear());
+                    //System.out.println(db.getDayOfMonth() + "-" + db.getMonthOfYear() + "-" + db.getYear());
                     if (dates.contains(db.getDayOfMonth() + "-" + db.getMonthOfYear() + "-" + db.getYear())) {
-                        System.err.println(db);
+                        //System.err.println(db);
                         if (historique.get(j).isDone()) {
                             cptOccur++;
-                            System.out.println("DONE");
+                            //System.out.println("DONE");
                         }
 
                     }
@@ -151,9 +149,9 @@ public class ControllerApp {
                 }
             }
 
-            System.err.println(nbReussit);
-            System.err.println(nbTotal);
-            System.out.println((float) nbReussit / nbTotal * 100.0);
+            //System.err.println(nbReussit);
+            //System.err.println(nbTotal);
+            //System.out.println((float) nbReussit / nbTotal * 100.0);
             String p = ""+((float) nbReussit / nbTotal * 100.0)+"% (Du "+dates.get(dates.size()-1)+" au "+dates.get(0)+")";
             pourcentage.put(r.getIdResolution(),p);
         }
@@ -176,6 +174,112 @@ public class ControllerApp {
         return "login";
     }
 
+    @GetMapping("/addResolution")
+    public String addResolution(Model model){
+        List<Resolution> resolutions = resolutionService.getAllResolutions();
+        Map populaire = new HashMap();
+        Map frequence = new HashMap();
+        List<Resolution> resolutionsPopulaire = new ArrayList<Resolution>();
+
+
+        //final
+        //var user = userService.getUserById(selectResolutionForm.getIdUser());
+        //tests
+        var user = userService.getUserById(2);
+
+        List<UserResolution> mesRes = userResolutionService.getAllUserResolutionByUser(user.get());
+        List<Resolution> resolutionsHasard = new ArrayList<Resolution>();
+        List<Long> idres = new ArrayList<Long>();
+        //on ajoute les résolutions que l'utilisateur possède déjà pour eviter de les tirer au hasard
+        for(int i=0;i<mesRes.size();i++){
+            idres.add(mesRes.get(i).getResolution().getIdResolution());
+        }
+
+        for (int i = 0;i<resolutions.size();i++){
+            List<UserResolution> res = userResolutionService.getAllUserResolutionByResolution(resolutions.get(i));
+            //recup la taille de chaque résolution
+            populaire.put(i,res.size());
+
+            if(res.size() > 0){
+                String freq = res.get(0).getNbOccurence() + " fois / " + res.get(0).getFrequence();
+                frequence.put(resolutions.get(i).getIdResolution(),freq.toLowerCase(Locale.ROOT));
+            }else {
+                frequence.put(resolutions.get(i).getIdResolution(), 0);
+            }
+        }
+
+        //triage de la liste
+        List<Map.Entry<Integer, Integer>> list = new ArrayList<>(populaire.entrySet());
+        list.sort(Map.Entry.comparingByValue());
+        int x =0;
+
+        System.err.println("size = "+list.size());
+        System.err.println("idres="+idres.toString());
+        while(resolutionsPopulaire.size()<3 && x<list.size()){
+            System.err.println("x="+x);
+            if(idres.contains(resolutions.get(list.get(x).getKey()).getIdResolution())){
+
+            }else{
+                resolutionsPopulaire.add(resolutions.get(list.get(x).getKey()));
+                idres.add(resolutions.get(list.get(x).getKey()).getIdResolution());
+            }
+            x++;
+        }
+
+
+
+
+        int i=0;
+        int max = resolutions.size()-idres.size();
+        while(resolutionsHasard.size()<10 && resolutionsHasard.size()<max){
+            //get random
+            double chiffre = Math.random() * ( resolutions.size() - 0 );
+            //verif
+            //System.err.println("chiffre="+((long) chiffre)+" - idres="+idres.toString()+" - contain="+idres.contains((long) chiffre));
+            if(idres.contains(resolutions.get((int) chiffre).getIdResolution())){
+
+            }else{
+                resolutionsHasard.add(resolutions.get((int) chiffre));
+                idres.add(resolutions.get((int) chiffre).getIdResolution());
+            }
+            i++;
+        }
+
+
+
+
+    System.err.println("Userid = "+user.get().getIdUser());
+
+
+        model.addAttribute("resolutionPopulaires",resolutionsPopulaire);
+        model.addAttribute("frequence",frequence);
+        model.addAttribute("resolutionHasard",resolutionsHasard);
+        model.addAttribute("idUser",user.get().getIdUser());
+        model.addAttribute("addResolutionForm", new AddResolutionForm());
+        model.addAttribute("addUserResolutionForm", new AddUserResolutionForm());
+        return "addResolution";
+    }
+
+    @PostMapping("/addNewResolution")
+    public String addNewResolution(@ModelAttribute AddResolutionForm addResolutionForm, Model model){
+        System.err.println("[ROUTE] /addNewResolution");
+        System.err.println("Création de l'utilisateur");
+        System.err.println("idUserRecup="+addResolutionForm.getIdUser());
+        User user = userService.getUserById(addResolutionForm.getIdUser()).get();
+
+        System.err.println("Création de la résolution");
+        Resolution r = new Resolution(addResolutionForm.getAction(),addResolutionForm.getFrequence(),addResolutionForm.getNb_occurences());
+
+        System.err.println("Ajout resolution dans BDD");
+        resolutionService.addResolution(r);
+
+        System.err.println("Ajout user_reso dans BDD");
+        userResolutionService.addUserResolution(new UserResolution(addResolutionForm.getFrequence(),addResolutionForm.getNb_occurences(),user,r));
+
+        addResolution(model);
+
+        return "addResolution";
+    }
 
     @PostMapping("/tryLogin")
     public String tryLogin(@ModelAttribute LoginForm loginForm, Model model){
@@ -315,6 +419,7 @@ public class ControllerApp {
 
         userResolutionService.addUserResolution(ur);
         // 4 - Récupération informations pour la page user
+        /*
         model.addAttribute("user", user.get());
 
         var user_resolutions = userResolutionService.getAllUserResolutionByUser(user.get());
@@ -324,6 +429,8 @@ public class ControllerApp {
         model.addAttribute("resolutions", resolutions);
 
         model.addAttribute("selectResolutionForm", new SelectResolutionForm());
-        return "user";
+*/
+        addResolution(model);
+        return "addResolution";
     }
 }
