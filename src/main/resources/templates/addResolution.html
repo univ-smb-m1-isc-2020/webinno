@@ -5,6 +5,13 @@
     <title>Ajouter une résolution</title>
 </head>
 <body>
+    <header>
+        <h1>NewYearResolution</h1>
+        <a th:if="${session.idusergen}==null" th:href="@{/login}">Sign in</a>
+        <a th:if="${session.idusergen}!=null" th:href="@{/logout}">Sign out</a>
+        <a th:if="${session.idusergen}!=null" th:href="@{/index}">Accueil</a>
+        <a th:if="${session.idusergen}!=null" th:href="@{/myResolutions}">Mes Résolutions</a>
+    </header>
     <div th:if="${resolutionPopulaires.size()}==0 ">
         <h1>Vous possédez déjà toutes les résolutions de la plateforme</h1>
     </div>
@@ -26,7 +33,7 @@
             <td th:text="${frequence.get(resolution.idResolution)}">Freq</td>
             <td><form action="#" th:action="@{/addUserResolution}" th:object="${addUserResolutionForm}" method="post">
                 <input type="hidden" th:value="${resolution.idResolution}" name="idResolution">
-                <input type="hidden" th:value="${idUser}" name="idUser">
+                <input type="hidden" th:value="${session.idusergen}" name="idUser">
                 <input type="hidden" th:value="${resolution.getFrequence()}" name="frequence">
                 <input type="hidden" th:value="${resolution.getNbOccurence()}" name="nb_occurences">
                 <input type="submit" value="Prendre cette résolution">
@@ -52,7 +59,7 @@
             <td th:text="${frequence.get(resolution.idResolution)}">Freq</td>
             <td><form action="#" th:action="@{/addUserResolution}" th:object="${addUserResolutionForm}" method="post">
                 <input type="hidden" th:value="${resolution.idResolution}" name="idResolution">
-                <input type="hidden" th:value="${idUser}" name="idUser">
+                <input type="hidden" th:value="${session.idusergen}" name="idUser">
                 <input type="hidden" th:value="${resolution.getFrequence()}" name="frequence">
                 <input type="hidden" th:value="${resolution.getNbOccurence()}" name="nb_occurences">
                 <input type="submit" value="Prendre cette résolution">
@@ -77,7 +84,7 @@
             <option value="ANNEE">Année</option>
         </select>
 
-        <input type="hidden" th:value="${idUser}" name="idUser">
+        <input type="hidden" th:value="${session.idusergen}" name="idUser">
         <input type="submit" value="Ajouter cette nouvelle résolution">
     </form>
 </body>

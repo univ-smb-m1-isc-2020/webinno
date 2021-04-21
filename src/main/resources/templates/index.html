@@ -9,11 +9,12 @@
     <h1>NewYearResolution</h1>
     <a th:if="${session.idusergen}==null" th:href="@{/login}">Sign in</a>
     <a th:if="${session.idusergen}!=null" th:href="@{/logout}">Sign out</a>
-    <a th:if="${session.idusergen}!=null" th:href="@{/addResolution}">AddResolution</a>
+    <a th:if="${session.idusergen}!=null" th:href="@{/addResolution}">Prendre de nouvelles Résolutions</a>
+    <a th:if="${session.idusergen}!=null" th:href="@{/myResolutions}">Mes Résolutions</a>
 </header>
 
 
-<h1>Liste des résolutions</h1>
+<h1>Liste de toutes les résolutions de la plateforme :</h1>
 
 <table>
     <tr>

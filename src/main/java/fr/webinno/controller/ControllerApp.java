@@ -42,18 +42,13 @@ public class ControllerApp {
         Map effectif = new HashMap();
         Map frequence = new HashMap();
 
-        //à mettre dans le login pour garder l'utilisateur courant
+
+        ////////////////////////////////////////////////////////////
+        //                         IMPORTANT                      //
+        //à mettre dans le login pour garder l'utilisateur courant//
+        ////////////////////////////////////////////////////////////
         session.setAttribute("idusergen",2);
 
-        //Pour le pourcentage
-        //recup chaque user
-            //recup l'historique de chaque user
-                //regarder si l'historique au moins eqivalent à la fréquence
-                //si oui
-                    //cpt++ pour cette résolution
-                //sinon
-                    //rien
-            //ajouter le cpt/nbuser de la résolution dans le map(idResolution, cpt/effictif.get(i));
 
         Map pourcentage = new HashMap();
 
@@ -67,28 +62,24 @@ public class ControllerApp {
             String freq = resolutions.get(i).getNbOccurence() + " fois / " + resolutions.get(i).getFrequence();
             frequence.put(resolutions.get(i).getIdResolution(),freq.toLowerCase(Locale.ROOT));
         }
-        ////////////////////
-        //TEST POURCENTAGE// (sur une résolution)
-        ////////////////////
 
+
+        //Pourcentage global de chaque résolution
         for(int k=0;k<resolutions.size();k++) {
-            //1- on recup la résolution
+            //1- on recupère la résolution
             Resolution r = resolutions.get(k);
-
-            //2- on recup les user-resolution de la resolution
+            //2- on recupère les userResolution de la résolution cela permet de connaitre les utilisateurs qui on pris cette résolution
             List<UserResolution> ur = userResolutionService.getAllUserResolutionByResolution(r);
-            //System.err.println(r);
-            //3- on recup la fréquence (jour/mois/année) pour connaitre la période sur laquelle on regarde la réussite
+            //3- on recupère la fréquence (jour/mois/année) pour connaitre la période à vérifier
             Frequence freq = r.getFrequence();
-            //4- on recup le nombre d'occurence au dela duquel on a réussit
+            //4- on recupère le nombre d'occurences au dela duquel on a réussit/validé la résolution
             int occurence = r.getNbOccurence();
 
-            //5- on recupère la date du jour et on fait la liste des jours à regarder en fonction de la frequence
+
+            //5- on recupère la date du jour et on fait la liste des jours à verifier en fonction de la fréquence
             DateTime date = new DateTime();
 
             List<String> dates = new ArrayList<String>();
-            //System.err.println(date);
-            //System.err.println(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
 
             if (freq == Frequence.JOUR) {
 
@@ -119,23 +110,19 @@ public class ControllerApp {
                     dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
                 }
             }
-            //System.err.println(dates.toString());
 
-            //5- on recup les historiques de chaque personnes
+            //5- on recupère les historiques de chaque personne
             int nbReussit = 0;
             int nbTotal = 0;
             for (int i = 0; i < ur.size(); i++) {
                 List<Historique> historique = ur.get(i).getHistoriques();
-                //6- on regarde dans l'historique si valide dans la dernière periode
+                //6- on regarde dans l'historique si la résolution est valide dans la dernière periode pour cette personne
                 int cptOccur = 0;
                 for (int j = 0; j < historique.size(); j++) {
                     DateTime db = new DateTime(historique.get(j).getDate());
-                    //System.out.println(db.getDayOfMonth() + "-" + db.getMonthOfYear() + "-" + db.getYear());
                     if (dates.contains(db.getDayOfMonth() + "-" + db.getMonthOfYear() + "-" + db.getYear())) {
-                        //System.err.println(db);
                         if (historique.get(j).isDone()) {
                             cptOccur++;
-                            //System.out.println("DONE");
                         }
 
                     }
@@ -146,18 +133,12 @@ public class ControllerApp {
                 }
             }
 
-            //System.err.println(nbReussit);
-            //System.err.println(nbTotal);
-            //System.out.println((float) nbReussit / nbTotal * 100.0);
             String p = "0% (Du "+dates.get(dates.size()-1)+" au "+dates.get(0)+")";;
             if(nbTotal > 0) {
                 p = "" + ((int) ((float) nbReussit / nbTotal * 100.0)) + "% (Du " + dates.get(dates.size() - 1) + " au " + dates.get(0) + ")";
             }
             pourcentage.put(r.getIdResolution(),p);
         }
-        //System.err.println(ur.get(0).getHistoriques().toString());
-        //System.err.println(ur.get(0).getUser().getName());
-        //System.err.println(ur.get(0).getHistoriques().get(0).getDate());
 
 
         model.addAttribute("frequence",frequence);
@@ -181,16 +162,14 @@ public class ControllerApp {
         Map frequence = new HashMap();
         List<Resolution> resolutionsPopulaire = new ArrayList<Resolution>();
 
-        int u = (int) session.getAttribute("idusergen");
-        //final
-        //var user = userService.getUserById(selectResolutionForm.getIdUser());
-        //tests
-        var user = userService.getUserById(u);
+        //On recupère notre utilisateur
+        var user = userService.getUserById((int) session.getAttribute("idusergen"));
 
         List<UserResolution> mesRes = userResolutionService.getAllUserResolutionByUser(user.get());
         List<Resolution> resolutionsHasard = new ArrayList<Resolution>();
         List<Long> idres = new ArrayList<Long>();
-        //on ajoute les résolutions que l'utilisateur possède déjà pour eviter de les tirer au hasard
+
+        //on ajoute les résolutions que l'utilisateur possède déjà pour eviter de les tirer au hasard ou dans les plus populaires
         for(int i=0;i<mesRes.size();i++){
             idres.add(mesRes.get(i).getResolution().getIdResolution());
         }
@@ -204,19 +183,18 @@ public class ControllerApp {
             frequence.put(resolutions.get(i).getIdResolution(),freq.toLowerCase(Locale.ROOT));
         }
 
-        //triage de la liste
+        //triage de la liste des resolutions par popularité
         List<Map.Entry<Integer, Integer>> list = new ArrayList<>(populaire.entrySet());
         list.sort(Map.Entry.comparingByValue());
         int x =0;
 
-        System.err.println("size = "+list.size());
-        System.err.println("idres="+idres.toString());
+
         while(resolutionsPopulaire.size()<3 && x<list.size()){
-            System.err.println("x="+x);
             if(idres.contains(resolutions.get(list.get(x).getKey()).getIdResolution())){
 
             }else{
                 resolutionsPopulaire.add(resolutions.get(list.get(x).getKey()));
+                //on ajoute dans les résolutions a ne pas tirer les résolution populaires retenue
                 idres.add(resolutions.get(list.get(x).getKey()).getIdResolution());
             }
             x++;
@@ -226,31 +204,27 @@ public class ControllerApp {
 
 
         int i=0;
+
+        //on prend 10 résolution si possibles sinon on prend le maximum (ensemble des resolutions auxquelles on enlèves celle que l'utilisateur possède et les populaire qui ont été ajouté juste avant
         int max = resolutions.size()-idres.size();
         while(resolutionsHasard.size()<10 && resolutionsHasard.size()<max){
-            //get random
+            //on tire une résolution random
             double chiffre = Math.random() * ( resolutions.size() - 0 );
-            //verif
-            //System.err.println("chiffre="+((long) chiffre)+" - idres="+idres.toString()+" - contain="+idres.contains((long) chiffre));
+            //on vérifie que cette résolution à le droit d'être prise (= ni populaire ni déjà prise par l'utilisateur)
             if(idres.contains(resolutions.get((int) chiffre).getIdResolution())){
 
             }else{
                 resolutionsHasard.add(resolutions.get((int) chiffre));
+                //on ajoute chaque resolutions dans celle qui n'ont pas le droit d'être prises (pour eviter des duplications)
                 idres.add(resolutions.get((int) chiffre).getIdResolution());
             }
             i++;
         }
 
 
-
-
-    System.err.println("Userid = "+user.get().getIdUser());
-
-
         model.addAttribute("resolutionPopulaires",resolutionsPopulaire);
         model.addAttribute("frequence",frequence);
         model.addAttribute("resolutionHasard",resolutionsHasard);
-        model.addAttribute("idUser",user.get().getIdUser());
         model.addAttribute("addResolutionForm", new AddResolutionForm());
         model.addAttribute("addUserResolutionForm", new AddUserResolutionForm());
         return "addResolution";
@@ -258,23 +232,40 @@ public class ControllerApp {
 
     @PostMapping("/addNewResolution")
     public String addNewResolution(@ModelAttribute AddResolutionForm addResolutionForm, Model model,HttpSession session){
-        System.err.println("[ROUTE] /addNewResolution");
-        System.err.println("Création de l'utilisateur");
-        System.err.println("idUserRecup="+addResolutionForm.getIdUser());
+        //Création de l'utilisateur"
         User user = userService.getUserById(addResolutionForm.getIdUser()).get();
 
-        System.err.println("Création de la résolution");
+        //Création de la résolution
         Resolution r = new Resolution(addResolutionForm.getAction(),addResolutionForm.getFrequence(),addResolutionForm.getNb_occurences());
 
-        System.err.println("Ajout resolution dans BDD");
+        //Ajout de la resolution dans la BDD
         resolutionService.addResolution(r);
 
-        System.err.println("Ajout user_reso dans BDD");
+        //Ajout de la user_resolution dans la BDD (on estime que la personne qui crée la résolution la prend imédiatement)
         userResolutionService.addUserResolution(new UserResolution(addResolutionForm.getFrequence(),addResolutionForm.getNb_occurences(),user,r));
 
-        //addResolution(model);
+        return index(model,session);
+    }
 
-        return addResolution(model,session);
+    @GetMapping("/myResolutions")
+    public String myResolutions(Model model,HttpSession session){
+
+        //On recupère notre utilisateur et ses résolutions
+        var user = userService.getUserById((int) session.getAttribute("idusergen"));
+        List<UserResolution> mesRes = userResolutionService.getAllUserResolutionByUser(user.get());
+
+        Map frequence = new HashMap();
+        List<Resolution> resolutions = new ArrayList<Resolution>();
+
+        for(int i=0;i<mesRes.size();i++){
+            resolutions.add(mesRes.get(i).getResolution());
+            String freq = mesRes.get(i).getResolution().getNbOccurence() + " fois / " + mesRes.get(i).getResolution().getFrequence();
+            frequence.put(mesRes.get(i).getResolution().getIdResolution(),freq.toLowerCase(Locale.ROOT));
+        }
+
+        model.addAttribute("resolutions",resolutions);
+        model.addAttribute("frequence",frequence);
+        return "myResolutions";
     }
 
     @PostMapping("/tryLogin")
@@ -414,19 +405,7 @@ public class ControllerApp {
         System.out.println("Creation de la nouvelle UserResolution : " + ur);
 
         userResolutionService.addUserResolution(ur);
-        // 4 - Récupération informations pour la page user
-        /*
-        model.addAttribute("user", user.get());
 
-        var user_resolutions = userResolutionService.getAllUserResolutionByUser(user.get());
-        model.addAttribute("user_resolutions", user_resolutions);
-
-        var resolutions = resolutionService.getAllResolutions();
-        model.addAttribute("resolutions", resolutions);
-
-        model.addAttribute("selectResolutionForm", new SelectResolutionForm());
-*/
-
-        return addResolution(model,session);
+        return index(model,session);
     }
 }
