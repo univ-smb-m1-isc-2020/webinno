@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
@@ -36,10 +37,13 @@ public class ControllerApp {
     }
 
     @GetMapping("*")
-    public String index(Model model){
+    public String index(Model model, HttpSession session){
         Map userResolutions = new HashMap();
         Map effectif = new HashMap();
         Map frequence = new HashMap();
+
+        //à mettre dans le login pour garder l'utilisateur courant
+        session.setAttribute("idusergen",2);
 
         //Pour le pourcentage
         //recup chaque user
@@ -60,15 +64,8 @@ public class ControllerApp {
             List<UserResolution> res = userResolutionService.getAllUserResolutionByResolution(resolutions.get(i));
             userResolutions.put(resolutions.get(i).getIdResolution(),res);
             effectif.put(resolutions.get(i).getIdResolution(),res.size());
-            if(res.size() > 0){
-                String freq = res.get(0).getNbOccurence() + " fois / " + res.get(0).getFrequence();
-                frequence.put(resolutions.get(i).getIdResolution(),freq.toLowerCase(Locale.ROOT));
-            }else {
-                frequence.put(resolutions.get(i).getIdResolution(), 0);
-            }
-
-            //System.err.println(res.get(0).getHistoriques().size());
-
+            String freq = resolutions.get(i).getNbOccurence() + " fois / " + resolutions.get(i).getFrequence();
+            frequence.put(resolutions.get(i).getIdResolution(),freq.toLowerCase(Locale.ROOT));
         }
         ////////////////////
         //TEST POURCENTAGE// (sur une résolution)
@@ -152,7 +149,10 @@ public class ControllerApp {
             //System.err.println(nbReussit);
             //System.err.println(nbTotal);
             //System.out.println((float) nbReussit / nbTotal * 100.0);
-            String p = ""+((float) nbReussit / nbTotal * 100.0)+"% (Du "+dates.get(dates.size()-1)+" au "+dates.get(0)+")";
+            String p = "0% (Du "+dates.get(dates.size()-1)+" au "+dates.get(0)+")";;
+            if(nbTotal > 0) {
+                p = "" + ((int) ((float) nbReussit / nbTotal * 100.0)) + "% (Du " + dates.get(dates.size() - 1) + " au " + dates.get(0) + ")";
+            }
             pourcentage.put(r.getIdResolution(),p);
         }
         //System.err.println(ur.get(0).getHistoriques().toString());
@@ -175,17 +175,17 @@ public class ControllerApp {
     }
 
     @GetMapping("/addResolution")
-    public String addResolution(Model model){
+    public String addResolution(Model model,HttpSession session){
         List<Resolution> resolutions = resolutionService.getAllResolutions();
         Map populaire = new HashMap();
         Map frequence = new HashMap();
         List<Resolution> resolutionsPopulaire = new ArrayList<Resolution>();
 
-
+        int u = (int) session.getAttribute("idusergen");
         //final
         //var user = userService.getUserById(selectResolutionForm.getIdUser());
         //tests
-        var user = userService.getUserById(2);
+        var user = userService.getUserById(u);
 
         List<UserResolution> mesRes = userResolutionService.getAllUserResolutionByUser(user.get());
         List<Resolution> resolutionsHasard = new ArrayList<Resolution>();
@@ -200,12 +200,8 @@ public class ControllerApp {
             //recup la taille de chaque résolution
             populaire.put(i,res.size());
 
-            if(res.size() > 0){
-                String freq = res.get(0).getNbOccurence() + " fois / " + res.get(0).getFrequence();
-                frequence.put(resolutions.get(i).getIdResolution(),freq.toLowerCase(Locale.ROOT));
-            }else {
-                frequence.put(resolutions.get(i).getIdResolution(), 0);
-            }
+            String freq = resolutions.get(i).getNbOccurence() + " fois / " + resolutions.get(i).getFrequence();
+            frequence.put(resolutions.get(i).getIdResolution(),freq.toLowerCase(Locale.ROOT));
         }
 
         //triage de la liste
@@ -261,7 +257,7 @@ public class ControllerApp {
     }
 
     @PostMapping("/addNewResolution")
-    public String addNewResolution(@ModelAttribute AddResolutionForm addResolutionForm, Model model){
+    public String addNewResolution(@ModelAttribute AddResolutionForm addResolutionForm, Model model,HttpSession session){
         System.err.println("[ROUTE] /addNewResolution");
         System.err.println("Création de l'utilisateur");
         System.err.println("idUserRecup="+addResolutionForm.getIdUser());
@@ -276,13 +272,13 @@ public class ControllerApp {
         System.err.println("Ajout user_reso dans BDD");
         userResolutionService.addUserResolution(new UserResolution(addResolutionForm.getFrequence(),addResolutionForm.getNb_occurences(),user,r));
 
-        addResolution(model);
+        //addResolution(model);
 
-        return "addResolution";
+        return addResolution(model,session);
     }
 
     @PostMapping("/tryLogin")
-    public String tryLogin(@ModelAttribute LoginForm loginForm, Model model){
+    public String tryLogin(@ModelAttribute LoginForm loginForm, Model model,HttpSession session){
         //TODO récupérer la checkbox remenberMe
 
         System.out.println("USERNAME : " +loginForm.getUserName());
@@ -293,7 +289,7 @@ public class ControllerApp {
         var password = loginForm.getPassword();
 
         if(user == null){
-            return index(model);
+            return index(model,session);
         }
         System.out.println("TEST USER" +user);
 
@@ -307,7 +303,7 @@ public class ControllerApp {
         }
         else{
             System.out.println("=============================LOGIN PAS OK=====================================");
-            return index(model);
+            return index(model,session);
         }
     }
 
@@ -397,7 +393,7 @@ public class ControllerApp {
     }
 
     @PostMapping("/addUserResolution")
-    public String addUserResolution(@ModelAttribute AddUserResolutionForm addUserResolutionForm, Model model){
+    public String addUserResolution(@ModelAttribute AddUserResolutionForm addUserResolutionForm, Model model,HttpSession session){
 
         // 1 - Récupération de l'user
         var user = userService.getUserById(addUserResolutionForm.getIdUser());
@@ -430,7 +426,7 @@ public class ControllerApp {
 
         model.addAttribute("selectResolutionForm", new SelectResolutionForm());
 */
-        addResolution(model);
-        return "addResolution";
+
+        return addResolution(model,session);
     }
 }
