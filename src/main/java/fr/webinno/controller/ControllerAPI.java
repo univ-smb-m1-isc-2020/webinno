@@ -99,4 +99,21 @@ public class ControllerAPI {
 
     }
 
+    @GetMapping("/takeNewResolution")
+    public String takeNewResolution(@RequestParam(value="idUser") long idUser, @RequestParam(value="action") String action, @RequestParam(value="frequence")Frequence frequence,@RequestParam(value="nbOccurences") int nbOccurences){
+
+        var user = userService.getUserById(idUser);
+        Resolution resolution = new Resolution(action);
+        resolutionService.addResolution(resolution);
+        try {
+            //System.out.println(resolution.getIdResolution());
+            userResolutionService.addUserResolution(new UserResolution(frequence, nbOccurences, user.get(), resolution));
+            return "{resultat:true}";
+        }catch (Exception e){
+            e.printStackTrace();
+            return "{resultat:false}";
+        }
+
+    }
+
 }
