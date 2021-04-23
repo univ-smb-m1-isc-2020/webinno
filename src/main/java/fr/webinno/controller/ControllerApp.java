@@ -15,7 +15,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.sql.Array;
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -82,7 +86,7 @@ public class ControllerApp {
         Quand un utilisateur veut accéder au détail d'une de ces résolutions
      */
     @PostMapping("/selectUserResolution")
-    public String selectUserResolution(@ModelAttribute UserResolutionForm userResolutionForm, Model model){
+    public String selectUserResolution(@ModelAttribute UserResolutionForm userResolutionForm, Model model) {
         //Récupération form
         var user = userService.getUserById(userResolutionForm.getIdUser());
         var resolution = resolutionService.getById(userResolutionForm.getIdResolution());
@@ -93,22 +97,24 @@ public class ControllerApp {
         //Récupération de l'historique de la résolution sur la derniere semaine
         ArrayList<Historique> histLastSemaine = user_resolution.getHistoriqueLastSemaine();
 
-        for(int i=0; i<histLastSemaine.size(); i++){
-            if(histLastSemaine.get(i).getIdHistorique() == 0){
+        for (int i = 0; i < histLastSemaine.size(); i++) {
+            if (histLastSemaine.get(i).getIdHistorique() == 0) {
                 historiqueService.addHistorique(histLastSemaine.get(i));
             }
         }
+
+        //Récupération du tableau pour la time line
+        TimeLine[] timeLines = getTimeLine(user_resolution);
 
         //Envoie page
         model.addAttribute("user", user.get());
         model.addAttribute("histLastSemaine", histLastSemaine);
         model.addAttribute("user_resolution", user_resolution);
         model.addAttribute("resolutionValidationForm", new ResolutionValidationForm());
+        model.addAttribute("timeLines", timeLines);
 
         return "resolution";
     }
-
-
 
     @PostMapping("/addUserResolutionForm")
     public String addUserResolutionForm(@ModelAttribute SelectResolutionForm selectResolutionForm, Model model){
@@ -152,13 +158,70 @@ public class ControllerApp {
             }
         }
 
+        //Récupération du tableau pour la time line
+        TimeLine[] timeLines = getTimeLine(user_resolution);
+
         //Envoie page
         model.addAttribute("user", user.get());
         model.addAttribute("histLastSemaine", histLastSemaine);
         model.addAttribute("user_resolution", user_resolution);
         model.addAttribute("resolutionValidationForm", new ResolutionValidationForm());
+        model.addAttribute("timeLines", timeLines);
 
         return "resolution";
-
     }
+
+
+
+
+
+
+
+
+
+    /**
+     * Permet d'obtenir le tableau pour la timeline d'une résolution d'un utilisateur
+     * @return
+     */
+    public TimeLine[] getTimeLine(UserResolution userResolution){
+        //1 - Récupération du premier jour de l'année
+        Calendar cal = Calendar.getInstance();
+        cal.set(cal.get(Calendar.YEAR), 0, 1);
+
+        //2 - Récupération du nombre de jour dans l'année
+        int nbJourAnnee = getNbJourAnnee(cal.get(Calendar.YEAR));
+
+        //3 - Création du tableau sur une annee
+        TimeLine[] timeLines = new TimeLine[nbJourAnnee];
+
+        for (int i = 0; i < timeLines.length; i++) {
+            //Regarde si dans la liste historiques il y a une instance d'historique avec la date cal courante et si son état de réussite est true
+            Historique histCourante = new Historique(cal.getTime(), true, userResolution);
+
+            if(userResolution.getHistoriques().contains(histCourante)){
+                timeLines[i] = new TimeLine(cal.getTime(), 1); //Ici changer le equal pour ne pas check le done mais apres si true = 1 si false = -1
+            }
+
+            else{
+                timeLines[i] = new TimeLine(cal.getTime(), 0);
+            }
+
+            cal.add(Calendar.DATE, +1);
+        }
+
+        return timeLines;
+    }
+
+    /**
+     * Permet de calculer le nombre de jour d'une année
+     * @param annee
+     * @return
+     */
+    public int getNbJourAnnee(int annee){
+        Calendar cal = Calendar.getInstance();
+        cal.set(1,1,annee);
+        return cal.getActualMaximum(Calendar.DAY_OF_YEAR);
+    }
+
+
 }

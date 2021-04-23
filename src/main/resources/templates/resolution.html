@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Resolution</title>
+    <link href = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel = "stylesheet">
+    <link rel="stylesheet" href="css/graph.css">
 </head>
 <body>
     <h1>Détail d'une résolution d'un user</h1>
@@ -22,7 +24,37 @@
         </tr>
     </table>
 
-    <h1>TODO validation sur une semaine</h1>
+    <h1>Time line</h1>
+    <div class="graph">
+        <ul class="months">
+            <li>Jan</li>
+            <li>Feb</li>
+            <li>Mar</li>
+            <li>Apr</li>
+            <li>May</li>
+            <li>Jun</li>
+            <li>Jul</li>
+            <li>Aug</li>
+            <li>Sep</li>
+            <li>Oct</li>
+            <li>Nov</li>
+            <li>Dec</li>
+        </ul>
+        <ul class="days">
+            <li>Sun</li>
+            <li>Mon</li>
+            <li>Tue</li>
+            <li>Wed</li>
+            <li>Thu</li>
+            <li>Fri</li>
+            <li>Sat</li>
+        </ul>
+        <ul class="squares" >
+            <li th:each="timeLine : ${timeLines}"  data-toggle="tooltip" data-placement="bottom" data-animation="false" delay="0" th:title="${timeLine.getDate()}" th:attr="data-level=${timeLine.level}"> </li>
+        </ul>
+    </div>
+
+    <h1>Modification sur une semaine</h1>
     <table>
         <tr>Id</tr>
         <tr>Jour</tr>
@@ -47,5 +79,9 @@
             </td>
         </tr>
     </table>
+
+    <script src = "https://code.jquery.com/jquery-3.4.1.min.js"> </script>
+    <script src = "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"> </script>
+    <script src = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js"> </script>
 </body>
 </html>

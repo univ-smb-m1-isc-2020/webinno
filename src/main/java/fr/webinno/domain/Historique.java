@@ -55,6 +55,17 @@ public class Historique {
         return false;
     }
 
+    public boolean equals(Object x){
+        if( x instanceof Historique){
+            Historique hist = (Historique) x;
+            if(hist.isDone() == this.done && hist.userResolution.equals(this.userResolution) && this.sameDate(hist.getDate())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 
     public long getIdHistorique(){
         return idHistorique;
