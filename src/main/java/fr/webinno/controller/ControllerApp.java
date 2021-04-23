@@ -252,8 +252,9 @@ public class ControllerApp {
 
         for(int i=0;i<mesRes.size();i++){
             resolutions.add(mesRes.get(i).getResolution());
-            //String freq = mesRes.get(i).getResolution().getNbOccurence() + " fois / " + mesRes.get(i).getResolution().getFrequence();
-            //frequence.put(mesRes.get(i).getResolution().getIdResolution(),freq.toLowerCase(Locale.ROOT));
+
+            String freq = mesRes.get(i).getNbOccurence() + " fois / " + mesRes.get(i).getFrequence();
+            frequence.put(mesRes.get(i).getResolution().getIdResolution(),freq.toLowerCase(Locale.ROOT));
         }
 
         model.addAttribute("resolutions",resolutions);

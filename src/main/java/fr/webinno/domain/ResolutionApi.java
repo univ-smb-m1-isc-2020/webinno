@@ -21,6 +21,13 @@ public class ResolutionApi {
         this.nbOccurence = nbOccurence;
     }
 
+    public ResolutionApi(Long idResolution, String action) {
+        this.idResolution = idResolution;
+        this.action = action;
+        this.frequence=null;
+        this.nbOccurence=0;
+    }
+
     public Long getIdResolution() {
         return idResolution;
     }

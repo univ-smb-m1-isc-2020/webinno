@@ -1,8 +1,6 @@
 package fr.webinno.controller;
 
-import fr.webinno.domain.Resolution;
-import fr.webinno.domain.User;
-import fr.webinno.domain.UserResolution;
+import fr.webinno.domain.*;
 import fr.webinno.service.HistoriqueService;
 import fr.webinno.service.ResolutionService;
 import fr.webinno.service.UserResolutionService;
@@ -36,11 +34,11 @@ public class ControllerAPI {
      * @return une liste de resolutions
      */
     @GetMapping("/getResolutions")
-    public List<Resolution> getResolutions(){
-        List<Resolution> resolutions = new ArrayList<Resolution>();
+    public List<ResolutionApi> getResolutions(){
+        List<ResolutionApi> resolutions = new ArrayList<ResolutionApi>();
         List<Resolution> resolutionList = resolutionService.getAllResolutions();
         for (Resolution resolution : resolutionList) {
-            //resolutions.add(new Resolution(resolution.getIdResolution(),resolution.getAction(), resolution.getFrequence(), resolution.getNbOccurence()));
+            resolutions.add(new ResolutionApi(resolution.getIdResolution(),resolution.getAction()));
         }
         return resolutions;
     }
@@ -51,12 +49,12 @@ public class ControllerAPI {
      * @return la liste de résolution de notre utilisateur
      */
     @GetMapping("/getResolutionsOfUser")
-    public List<Resolution> getResolutionsOfUser(@RequestParam(value="idUser")long idUser){
+    public List<ResolutionApi> getResolutionsOfUser(@RequestParam(value="idUser")long idUser){
         var user = userService.getUserById(idUser);
         List<UserResolution> urList = user.get().getUserResolutions();
-        List<Resolution> resolutions = new ArrayList<Resolution>();
+        List<ResolutionApi> resolutions = new ArrayList<ResolutionApi>();
         for(int i=0;i<urList.size();i++){
-                //resolutions.add(new Resolution(urList.get(i).getResolution().getIdResolution(),urList.get(i).getResolution().getAction(),urList.get(i).getResolution().getFrequence(),urList.get(i).getResolution().getNbOccurence()));
+                resolutions.add(new ResolutionApi(urList.get(i).getResolution().getIdResolution(),urList.get(i).getResolution().getAction(),urList.get(i).getFrequence(),urList.get(i).getNbOccurence()));
         }
         return resolutions;
     }
@@ -73,26 +71,26 @@ public class ControllerAPI {
     }
 
     @GetMapping("/getNotResolutions")
-    public List<Resolution> getNotResolutions(@RequestParam(value="idUser") long idUser){
+    public List<ResolutionApi> getNotResolutions(@RequestParam(value="idUser") long idUser){
         var user = userService.getUserById(idUser);
         List<Resolution> resolutions = resolutionService.getAllResolutions();
-        List<Resolution> res = new ArrayList<Resolution>();
+        List<ResolutionApi> res = new ArrayList<ResolutionApi>();
         for(int i=0;i<user.get().getUserResolutions().size();i++){
             resolutions.remove(user.get().getUserResolutions().get(i).getResolution());
         }
         for(Resolution resolution: resolutions){
-            //res.add(new Resolution(resolution.getIdResolution(),resolution.getAction(),resolution.getFrequence(),resolution.getNbOccurence()));
+            res.add(new ResolutionApi(resolution.getIdResolution(),resolution.getAction()));
         }
         return res;
     }
 
     @GetMapping("/takeResolution")
-    public String takeResolution(@RequestParam(value="idUser") long idUser,@RequestParam(value="idResolution") long idResolution){
+    public String takeResolution(@RequestParam(value="idUser") long idUser, @RequestParam(value="idResolution") long idResolution, @RequestParam(value="frequence")Frequence frequence,@RequestParam(value="nbOccurences") int nbOccurences){
 
         var user = userService.getUserById(idUser);
         var resolution = resolutionService.getById(idResolution);
         try {
-            //userResolutionService.addUserResolution(new UserResolution(resolution.get().getFrequence(), resolution.get().getNbOccurence(), user.get(), resolution.get()));
+            userResolutionService.addUserResolution(new UserResolution(frequence, nbOccurences, user.get(), resolution.get()));
             return "{resultat:true}";
         }catch (Exception e){
             e.printStackTrace();
