@@ -5,7 +5,7 @@
     <title>Resolution</title>
 </head>
 <body>
-    <h1>Liste des résolutions</h1>
+    <h1>Détail d'une résolution d'un user</h1>
 
     <table>
         <tr>
@@ -14,12 +14,37 @@
             <th>Frequence</th>
             <th>NombreOcc</th>
         </tr>
+        <tr>
+            <td th:text="${user_resolution.resolution.idResolution}"></td>
+            <td th:text="${user_resolution.resolution.action}"></td>
+            <td th:text="${user_resolution.frequence}"></td>
+            <td th:text="${user_resolution.nbOccurence}"></td>
+        </tr>
+    </table>
 
-        <tr th:each="resolution : ${resolutions}">
-            <td th:text="${resolution.id}">Id</td>
-            <td th:text="${resolution.action}">Action</td>
-            <td th:text="${resolution.frequence}">Frequence</td>
-            <td th:text="${resolution.nbOccurence}">NombreOcc</td>
+    <h1>TODO validation sur une semaine</h1>
+    <table>
+        <tr>Id</tr>
+        <tr>Jour</tr>
+        <tr>Etat</tr>
+        <tr>Bouton</tr>
+
+        <tr th:each="hist : ${histLastSemaine}">
+            <td th:text="${hist.idHistorique}"></td>
+            <td th:text="${hist.getDate()}"></td>
+            <td th:text="${hist.isDone()}"></td>
+            <td>
+                <form action="#" th:action="@{/updateValidation}" th:object="${resolutionValidationForm}" method="post">
+                    <input type="hidden" th:value="${user.idUser}" name="idUser">
+                    <input type="hidden" th:value="${hist.getIdHistorique()}" name="idHistorique">
+                    <div th:if="${hist.isDone()}">
+                        <input th:type="submit" value="invalider">
+                    </div>
+                    <div th:unless="${hist.isDone()}">
+                        <input th:type="submit" value="valider">
+                    </div>
+                </form>
+            </td>
         </tr>
     </table>
 </body>

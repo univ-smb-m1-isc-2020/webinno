@@ -1,5 +1,6 @@
 package fr.webinno.service;
 
+import fr.webinno.domain.Resolution;
 import fr.webinno.domain.User;
 import fr.webinno.domain.UserResolution;
 import fr.webinno.repository.UserResolutionRepository;
@@ -25,5 +26,10 @@ public class UserResolutionImpl implements UserResolutionService{
     @Override
     public void addUserResolution(UserResolution userResolution) {
         userResolutionRepository.save(userResolution);
+    }
+
+    @Override
+    public UserResolution getByUserAndResolution(User user, Resolution resolution){
+        return userResolutionRepository.findOneByUserAndResolution(user, resolution);
     }
 }
