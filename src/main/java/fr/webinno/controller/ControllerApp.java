@@ -188,13 +188,20 @@ public class ControllerApp {
         Calendar cal = Calendar.getInstance();
         cal.set(cal.get(Calendar.YEAR), 0, 1);
 
-        //2 - Récupération du nombre de jour dans l'année
+        //2 - Récupération du nombre de jour dans l'année et de decalage qui correspond au nombre de jours a ajouter pour aligner la case du premier jour de l'année sur son bon jour.
         int nbJourAnnee = getNbJourAnnee(cal.get(Calendar.YEAR));
+        int decalage = cal.get(Calendar.DAY_OF_WEEK) - 1;
 
         //3 - Création du tableau sur une annee
-        TimeLine[] timeLines = new TimeLine[nbJourAnnee];
+        TimeLine[] timeLines = new TimeLine[nbJourAnnee+decalage];
 
-        for (int i = 0; i < timeLines.length; i++) {
+        //Ajout au début du tableau de valeur useless pour aligner
+        for(int i=0; i<decalage; i++){
+            timeLines[i] = new TimeLine(cal.getTime(), 2);
+        }
+
+        //Ajout des valeurs sur l'année 1 = fait, 0 = pas d'info
+        for (int i = decalage; i < timeLines.length; i++) {
             //Regarde si dans la liste historiques il y a une instance d'historique avec la date cal courante et si son état de réussite est true
             Historique histCourante = new Historique(cal.getTime(), true, userResolution);
 
