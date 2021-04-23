@@ -173,12 +173,6 @@ public class ControllerApp {
 
 
 
-
-
-
-
-
-
     /**
      * Permet d'obtenir le tableau pour la timeline d'une résolution d'un utilisateur
      * @return
@@ -206,9 +200,8 @@ public class ControllerApp {
             Historique histCourante = new Historique(cal.getTime(), true, userResolution);
 
             if(userResolution.getHistoriques().contains(histCourante)){
-                timeLines[i] = new TimeLine(cal.getTime(), 1); //Ici changer le equal pour ne pas check le done mais apres si true = 1 si false = -1
+                timeLines[i] = new TimeLine(cal.getTime(), 1);
             }
-
             else{
                 timeLines[i] = new TimeLine(cal.getTime(), 0);
             }
