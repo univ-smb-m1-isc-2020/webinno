@@ -103,7 +103,7 @@ public class ControllerAPI {
     public String takeNewResolution(@RequestParam(value="idUser") long idUser, @RequestParam(value="action") String action, @RequestParam(value="frequence")Frequence frequence,@RequestParam(value="nbOccurences") int nbOccurences){
 
         var user = userService.getUserById(idUser);
-        Resolution resolution = new Resolution(action);
+        Resolution resolution = new Resolution(action.replace("_"," "));
         resolutionService.addResolution(resolution);
         try {
             //System.out.println(resolution.getIdResolution());
