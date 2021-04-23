@@ -14,11 +14,6 @@ public class Resolution {
 
     private String action;
 
-    @Enumerated(EnumType.STRING)
-    private Frequence frequence;
-
-    private int nbOccurence;
-
     @OneToMany( targetEntity = UserResolution.class, mappedBy = "resolution" )
     private List<UserResolution> userResolutions = new ArrayList<>();
 
@@ -26,10 +21,13 @@ public class Resolution {
 
     }
 
-    public Resolution(String action, Frequence frequence, int nbOccurence) {
-        this.frequence = frequence;
-        this.nbOccurence = nbOccurence;
+    public Resolution(String action) {
         this.action = action;
+    }
+
+    public Resolution(Long idResolution,String action) {
+        this.action = action;
+        this.idResolution = idResolution;
     }
 
     public Long getIdResolution(){
@@ -56,21 +54,5 @@ public class Resolution {
 
     public void setIdResolution(Long idResolution) {
         this.idResolution = idResolution;
-    }
-
-    public Frequence getFrequence() {
-        return frequence;
-    }
-
-    public void setFrequence(Frequence frequence) {
-        this.frequence = frequence;
-    }
-
-    public int getNbOccurence() {
-        return nbOccurence;
-    }
-
-    public void setNbOccurence(int nbOccurence) {
-        this.nbOccurence = nbOccurence;
     }
 }

@@ -21,7 +21,6 @@
         <th>Id</th>
         <th>Action</th>
         <th>Nombre d'inscrit</th>
-        <th>Fréquence</th>
         <th>Pourcentage de réussite sur la dernière période</th>
     </tr>
 
@@ -29,7 +28,6 @@
         <td th:text="${resolution.idResolution}">IdResolution</td>
         <td th:text="${resolution.action}">Action</td>
         <td th:text="${effectif.get(resolution.idResolution)}">NbInscrits</td>
-        <td th:text="${frequence.get(resolution.idResolution)}">Freq</td>
         <td th:text="${pourcentage.get(resolution.idResolution)}">Pourcentage</td>
 
     </tr>

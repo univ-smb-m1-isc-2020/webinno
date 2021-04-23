@@ -40,7 +40,6 @@ public class ControllerApp {
     public String index(Model model, HttpSession session){
         Map userResolutions = new HashMap();
         Map effectif = new HashMap();
-        Map frequence = new HashMap();
 
 
         ////////////////////////////////////////////////////////////
@@ -59,8 +58,6 @@ public class ControllerApp {
             List<UserResolution> res = userResolutionService.getAllUserResolutionByResolution(resolutions.get(i));
             userResolutions.put(resolutions.get(i).getIdResolution(),res);
             effectif.put(resolutions.get(i).getIdResolution(),res.size());
-            String freq = resolutions.get(i).getNbOccurence() + " fois / " + resolutions.get(i).getFrequence();
-            frequence.put(resolutions.get(i).getIdResolution(),freq.toLowerCase(Locale.ROOT));
         }
 
 
@@ -69,52 +66,54 @@ public class ControllerApp {
             //1- on recupère la résolution
             Resolution r = resolutions.get(k);
             //2- on recupère les userResolution de la résolution cela permet de connaitre les utilisateurs qui on pris cette résolution
-            List<UserResolution> ur = userResolutionService.getAllUserResolutionByResolution(r);
-            //3- on recupère la fréquence (jour/mois/année) pour connaitre la période à vérifier
-            Frequence freq = r.getFrequence();
-            //4- on recupère le nombre d'occurences au dela duquel on a réussit/validé la résolution
-            int occurence = r.getNbOccurence();
-
-
-            //5- on recupère la date du jour et on fait la liste des jours à verifier en fonction de la fréquence
-            DateTime date = new DateTime();
+            List<UserResolution> ur = r.getUserResolutions();
 
             List<String> dates = new ArrayList<String>();
-
-            if (freq == Frequence.JOUR) {
-
-                dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
-
-            } else if (freq == Frequence.SEMAINE) {
-                dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
-
-                int days = Days.daysBetween(date, date.minusWeeks(1)).getDays();
-                for (int i = days + 1; i < 0; i++) {
-                    date = date.minusDays(1);
-                    dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
-                }
-
-            } else if (freq == Frequence.MOIS) {
-                dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
-                int days = Days.daysBetween(date, date.minusMonths(1)).getDays();
-                for (int i = days + 1; i < 0; i++) {
-                    date = date.minusDays(1);
-                    dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
-                }
-
-            } else if (freq == Frequence.ANNEE) {
-                dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
-                int days = Days.daysBetween(date, date.minusYears(1)).getDays();
-                for (int i = days + 1; i < 0; i++) {
-                    date = date.minusDays(1);
-                    dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
-                }
-            }
 
             //5- on recupère les historiques de chaque personne
             int nbReussit = 0;
             int nbTotal = 0;
             for (int i = 0; i < ur.size(); i++) {
+                //3- on recupère la fréquence (jour/mois/année) pour connaitre la période à vérifier
+                Frequence freq = ur.get(i).getFrequence();
+                //4- on recupère le nombre d'occurences au dela duquel on a réussit/validé la résolution
+                int occurence = ur.get(i).getNbOccurence();
+
+
+                //5- on recupère la date du jour et on fait la liste des jours à verifier en fonction de la fréquence
+                DateTime date = new DateTime();
+
+
+
+                if (freq == Frequence.JOUR) {
+
+                    dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+
+                } else if (freq == Frequence.SEMAINE) {
+                    dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+
+                    int days = Days.daysBetween(date, date.minusWeeks(1)).getDays();
+                    for (int j = days + 1; j < 0; j++) {
+                        date = date.minusDays(1);
+                        dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                    }
+
+                } else if (freq == Frequence.MOIS) {
+                    dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                    int days = Days.daysBetween(date, date.minusMonths(1)).getDays();
+                    for (int j = days + 1; j < 0; j++) {
+                        date = date.minusDays(1);
+                        dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                    }
+
+                } else if (freq == Frequence.ANNEE) {
+                    dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                    int days = Days.daysBetween(date, date.minusYears(1)).getDays();
+                    for (int j = days + 1; j < 0; j++) {
+                        date = date.minusDays(1);
+                        dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                    }
+                }
                 List<Historique> historique = ur.get(i).getHistoriques();
                 //6- on regarde dans l'historique si la résolution est valide dans la dernière periode pour cette personne
                 int cptOccur = 0;
@@ -133,15 +132,14 @@ public class ControllerApp {
                 }
             }
 
-            String p = "0% (Du "+dates.get(dates.size()-1)+" au "+dates.get(0)+")";;
+            String p = "0%";;
             if(nbTotal > 0) {
-                p = "" + ((int) ((float) nbReussit / nbTotal * 100.0)) + "% (Du " + dates.get(dates.size() - 1) + " au " + dates.get(0) + ")";
+                p = "" + ((int) ((float) nbReussit / nbTotal * 100.0)) + "%";
             }
             pourcentage.put(r.getIdResolution(),p);
         }
 
 
-        model.addAttribute("frequence",frequence);
         model.addAttribute("userResolutions",userResolutions);
         model.addAttribute("effectif",effectif);
         model.addAttribute("resolutions",resolutions);
@@ -159,7 +157,6 @@ public class ControllerApp {
     public String addResolution(Model model,HttpSession session){
         List<Resolution> resolutions = resolutionService.getAllResolutions();
         Map populaire = new HashMap();
-        Map frequence = new HashMap();
         List<Resolution> resolutionsPopulaire = new ArrayList<Resolution>();
 
         //On recupère notre utilisateur
@@ -175,12 +172,9 @@ public class ControllerApp {
         }
 
         for (int i = 0;i<resolutions.size();i++){
-            List<UserResolution> res = userResolutionService.getAllUserResolutionByResolution(resolutions.get(i));
+            List<UserResolution> res = resolutions.get(i).getUserResolutions();
             //recup la taille de chaque résolution
             populaire.put(i,res.size());
-
-            String freq = resolutions.get(i).getNbOccurence() + " fois / " + resolutions.get(i).getFrequence();
-            frequence.put(resolutions.get(i).getIdResolution(),freq.toLowerCase(Locale.ROOT));
         }
 
         //triage de la liste des resolutions par popularité
@@ -223,7 +217,6 @@ public class ControllerApp {
 
 
         model.addAttribute("resolutionPopulaires",resolutionsPopulaire);
-        model.addAttribute("frequence",frequence);
         model.addAttribute("resolutionHasard",resolutionsHasard);
         model.addAttribute("addResolutionForm", new AddResolutionForm());
         model.addAttribute("addUserResolutionForm", new AddUserResolutionForm());
@@ -236,7 +229,7 @@ public class ControllerApp {
         User user = userService.getUserById(addResolutionForm.getIdUser()).get();
 
         //Création de la résolution
-        Resolution r = new Resolution(addResolutionForm.getAction(),addResolutionForm.getFrequence(),addResolutionForm.getNb_occurences());
+        Resolution r = new Resolution(addResolutionForm.getAction());
 
         //Ajout de la resolution dans la BDD
         resolutionService.addResolution(r);
@@ -259,8 +252,8 @@ public class ControllerApp {
 
         for(int i=0;i<mesRes.size();i++){
             resolutions.add(mesRes.get(i).getResolution());
-            String freq = mesRes.get(i).getResolution().getNbOccurence() + " fois / " + mesRes.get(i).getResolution().getFrequence();
-            frequence.put(mesRes.get(i).getResolution().getIdResolution(),freq.toLowerCase(Locale.ROOT));
+            //String freq = mesRes.get(i).getResolution().getNbOccurence() + " fois / " + mesRes.get(i).getResolution().getFrequence();
+            //frequence.put(mesRes.get(i).getResolution().getIdResolution(),freq.toLowerCase(Locale.ROOT));
         }
 
         model.addAttribute("resolutions",resolutions);

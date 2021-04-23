@@ -37,7 +37,12 @@ public class ControllerAPI {
      */
     @GetMapping("/getResolutions")
     public List<Resolution> getResolutions(){
-        return resolutionService.getAllResolutions();
+        List<Resolution> resolutions = new ArrayList<Resolution>();
+        List<Resolution> resolutionList = resolutionService.getAllResolutions();
+        for (Resolution resolution : resolutionList) {
+            //resolutions.add(new Resolution(resolution.getIdResolution(),resolution.getAction(), resolution.getFrequence(), resolution.getNbOccurence()));
+        }
+        return resolutions;
     }
 
     /**
@@ -51,43 +56,47 @@ public class ControllerAPI {
         List<UserResolution> urList = user.get().getUserResolutions();
         List<Resolution> resolutions = new ArrayList<Resolution>();
         for(int i=0;i<urList.size();i++){
-                resolutions.add(urList.get(i).getResolution());
+                //resolutions.add(new Resolution(urList.get(i).getResolution().getIdResolution(),urList.get(i).getResolution().getAction(),urList.get(i).getResolution().getFrequence(),urList.get(i).getResolution().getNbOccurence()));
         }
         return resolutions;
     }
 
     @GetMapping("/connectUser")
-    public Boolean connectUser(@RequestParam(value="login") String login,@RequestParam(value="pass") String pass){
+    public String connectUser(@RequestParam(value="login") String login,@RequestParam(value="pass") String pass){
         var user= userService.getUserByName(login);
         if(user != null){
             if(user.login(pass)){
-                return true;
+                return "{resultat:true,idUser:"+user.getIdUser()+"}";
             }
         }
-        return false;
+        return "{resultat:false}";
     }
 
     @GetMapping("/getNotResolutions")
     public List<Resolution> getNotResolutions(@RequestParam(value="idUser") long idUser){
         var user = userService.getUserById(idUser);
         List<Resolution> resolutions = resolutionService.getAllResolutions();
+        List<Resolution> res = new ArrayList<Resolution>();
         for(int i=0;i<user.get().getUserResolutions().size();i++){
             resolutions.remove(user.get().getUserResolutions().get(i).getResolution());
         }
-        return resolutions;
+        for(Resolution resolution: resolutions){
+            //res.add(new Resolution(resolution.getIdResolution(),resolution.getAction(),resolution.getFrequence(),resolution.getNbOccurence()));
+        }
+        return res;
     }
 
     @GetMapping("/takeResolution")
-    public Boolean takeResolution(@RequestParam(value="idUser") long idUser,@RequestParam(value="idResolution") long idResolution){
+    public String takeResolution(@RequestParam(value="idUser") long idUser,@RequestParam(value="idResolution") long idResolution){
 
         var user = userService.getUserById(idUser);
         var resolution = resolutionService.getById(idResolution);
         try {
-            userResolutionService.addUserResolution(new UserResolution(resolution.get().getFrequence(), resolution.get().getNbOccurence(), user.get(), resolution.get()));
-            return true;
+            //userResolutionService.addUserResolution(new UserResolution(resolution.get().getFrequence(), resolution.get().getNbOccurence(), user.get(), resolution.get()));
+            return "{resultat:true}";
         }catch (Exception e){
             e.printStackTrace();
-            return false;
+            return "{resultat:false}";
         }
 
     }

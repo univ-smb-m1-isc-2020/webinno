@@ -47,8 +47,8 @@ public class ResolutionServiceImpl implements ResolutionService {
     @PostConstruct
     public void initialize(){
         if(resolutionRepository.findAll().isEmpty()){
-            resolutionRepository.saveAndFlush(new Resolution("Me lever à 8h", Frequence.SEMAINE,3));
-            resolutionRepository.saveAndFlush(new Resolution("Me coucher avant 5h", Frequence.JOUR,1));
+            resolutionRepository.saveAndFlush(new Resolution("Me lever à 8h"));
+            resolutionRepository.saveAndFlush(new Resolution("Me coucher avant 5h"));
         }
     }
 }

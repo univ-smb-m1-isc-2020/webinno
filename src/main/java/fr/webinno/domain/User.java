@@ -79,6 +79,7 @@ public class User {
         this.password = password;
     }
 
+
     public List<UserResolution> getUserResolutions() {
         return userResolutions;
     }
