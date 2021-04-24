@@ -326,6 +326,13 @@ public class ControllerApp {
         return "login";
     }
 
+    @GetMapping("/logout")
+    public String logout(Model model,HttpSession session){
+        session.removeAttribute("user");
+
+        return index(model,session);
+    }
+
 
     @PostMapping("/tryLogin")
     public String tryLogin(@ModelAttribute LoginForm loginForm, Model model, HttpSession session){
