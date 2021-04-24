@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajouter une résolution</title>
+</head>
+<body>
+    <header>
+        <h1>NewYearResolution</h1>
+        <a th:if="${session.user}!=null" th:href="@{/logout}">Sign out</a>
+        <a th:if="${session.user}!=null" th:href="@{/index}">Accueil</a>
+        <a th:if="${session.user}!=null" th:href="@{/myResolutions}">Mes Résolutions</a>
+    </header>
+    <div th:if="${resolutionPopulaires.size()}==0 ">
+        <h1>Vous possédez déjà toutes les résolutions de la plateforme</h1>
+    </div>
+
+
+    <div th:if="${resolutionPopulaires.size()}>0 ">
+    <h1>Les résolutions populaires:</h1>
+    <table>
+        <tr>
+            <th>Id</th>
+            <th>Action</th>
+            <th>Choisissez votre fréquence</th>
+            <th>S'abonner</th>
+        </tr>
+
+        <tr th:each="resolution : ${resolutionPopulaires}">
+            <td th:text="${resolution.idResolution}">IdResolution</td>
+            <td th:text="${resolution.action}">Action</td>
+            <td><form action="#" th:action="@{/addUserResolution}" th:object="${addUserResolutionForm}" method="post">
+                <input type="number" min="1" name="occurence" id="occurence" th:field="*{nb_occurences}">
+                <label>fois par</label>
+                <select id="frequence" th:field="*{frequence}">
+                    <option value="JOUR">Jour</option>
+                    <option value="SEMAINE">Semaine</option>
+                    <option value="MOIS">Mois</option>
+                    <option value="ANNEE">Année</option>
+                </select>
+            <td>
+                <input type="hidden" th:value="${resolution.idResolution}" name="idResolution">
+                <input type="hidden" th:value="${session.user.getIdUser()}" name="idUser">
+                <input type="submit" value="Prendre cette résolution">
+            </form></td>
+        </tr>
+    </table>
+    </div>
+    <div th:if="${resolutionHasard.size()}>0 ">
+    <h1>Les résolutions au hasard :</h1>
+    <table>
+        <tr>
+            <th>Id</th>
+            <th>Action</th>
+            <th>Choisissez votre fréquence</th>
+            <th>S'abonner</th>
+        </tr>
+
+
+        <tr th:each="resolution : ${resolutionHasard}">
+            <td th:text="${resolution.idResolution}">IdResolution</td>
+            <td th:text="${resolution.action}">Action</td>
+            <td><form action="#" th:action="@{/addUserResolution}" th:object="${addUserResolutionForm}" method="post">
+                <input type="number" min="1" name="occurence" id="occurence" th:field="*{nb_occurences}">
+                <label>fois par</label>
+                <select id="frequence" th:field="*{frequence}">
+                    <option value="JOUR">Jour</option>
+                    <option value="SEMAINE">Semaine</option>
+                    <option value="MOIS">Mois</option>
+                    <option value="ANNEE">Année</option>
+                </select>
+            <td>
+                <input type="hidden" th:value="${resolution.idResolution}" name="idResolution">
+                <input type="hidden" th:value="${session.user.getIdUser()}" name="idUser">
+                <input type="submit" value="Prendre cette résolution">
+                </form></td>
+        </tr>
+    </table>
+    </div>
+    <h1>Ajouter votre propre résolution :</h1>
+    <form action="#" th:action="@{/addNewResolution}" th:object="${addResolutionForm}" method="post">
+        <!-- recup Action/Frequence/NbOccurence -->
+        <label for="action">Action :</label>
+        <input type="text" id="action" name="action" th:field="*{action}">
+
+        <label>Fréquence :</label>
+
+        <input type="number" min="1" name="occurence" id="occurence" th:field="*{nb_occurences}">
+        <label>fois par</label>
+        <select id="frequence" th:field="*{frequence}">
+            <option value="JOUR">Jour</option>
+            <option value="SEMAINE">Semaine</option>
+            <option value="MOIS">Mois</option>
+            <option value="ANNEE">Année</option>
+        </select>
+
+        <input type="hidden" th:value="${session.user.getIdUser()}" name="idUser">
+        <input type="submit" value="Ajouter cette nouvelle résolution">
+    </form>
+</body>
+</html>

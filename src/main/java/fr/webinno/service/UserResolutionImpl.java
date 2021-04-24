@@ -29,7 +29,12 @@ public class UserResolutionImpl implements UserResolutionService{
     }
 
     @Override
-    public UserResolution getByUserAndResolution(User user, Resolution resolution){
+    public UserResolution getByUserAndResolution(User user, Resolution resolution) {
         return userResolutionRepository.findOneByUserAndResolution(user, resolution);
+    }
+
+    @Override
+    public List<UserResolution> getAllUserResolutionByResolution(Resolution resolution){
+        return userResolutionRepository.findAllByResolution(resolution);
     }
 }

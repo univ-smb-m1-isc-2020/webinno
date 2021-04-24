@@ -7,8 +7,11 @@ import fr.webinno.service.HistoriqueService;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import org.joda.time.DateTime;
+
+import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 public class Historique {
@@ -65,8 +68,6 @@ public class Historique {
         return false;
     }
 
-
-
     public long getIdHistorique(){
         return idHistorique;
     }
@@ -83,11 +84,11 @@ public class Historique {
         return done;
     }
 
+
     public void setDone(boolean done) {
         this.done = done;
     }
 
-    public UserResolution getUserResolution(){
-        return this.userResolution;
-    }
+    public UserResolution getUserResolution(){ return this.userResolution; }
+
 }

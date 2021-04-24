@@ -10,4 +10,6 @@ public interface UserResolutionService {
     List<UserResolution> getAllUserResolutionByUser(User User);
     void addUserResolution(UserResolution userResolution);
     UserResolution getByUserAndResolution(User user, Resolution resolution);
+    List<UserResolution> getAllUserResolutionByResolution(Resolution resolution);
+
 }

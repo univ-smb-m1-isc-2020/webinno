@@ -10,4 +10,5 @@ import java.util.List;
 public interface UserResolutionRepository extends JpaRepository<UserResolution, Long> {
     List<UserResolution> findAllByUser(User user);
     UserResolution findOneByUserAndResolution(User user, Resolution resolution);
+    List<UserResolution> findAllByResolution(Resolution resolution);
 }
