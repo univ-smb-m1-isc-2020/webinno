@@ -47,9 +47,7 @@ public class Resolution {
     }
 
     public String toString(){
-        String str = this.action + " [ ";
-
-        return str;
+        return this.action;
     }
 
     public void setIdResolution(Long idResolution) {

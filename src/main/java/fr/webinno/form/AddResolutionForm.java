@@ -9,6 +9,18 @@ public class AddResolutionForm {
     private int nb_occurences;
     private String action;
 
+    public AddResolutionForm(long idResolution, long idUser, Frequence frequence, int nb_occurences, String action) {
+        this.idResolution = idResolution;
+        this.idUser = idUser;
+        this.frequence = frequence;
+        this.nb_occurences = nb_occurences;
+        this.action = action;
+    }
+
+    public AddResolutionForm() {
+    }
+
+
     public long getIdResolution() {
         return idResolution;
     }

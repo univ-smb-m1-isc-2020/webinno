@@ -4,6 +4,14 @@ public class SelectResolutionForm {
     private long idUser;
     private long idResolution;
 
+    public SelectResolutionForm() {
+    }
+
+    public SelectResolutionForm(long idUser, long idResolution) {
+        this.idUser = idUser;
+        this.idResolution = idResolution;
+    }
+
     public long getIdUser() {
         return idUser;
     }

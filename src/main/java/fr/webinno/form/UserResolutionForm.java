@@ -5,6 +5,14 @@ public class UserResolutionForm {
     private long idUser;
     private long idResolution;
 
+
+    public UserResolutionForm() {
+    }
+    public UserResolutionForm(long idUser, long idResolution) {
+        this.idUser = idUser;
+        this.idResolution = idResolution;
+    }
+
     public long getIdUser() {
         return idUser;
     }

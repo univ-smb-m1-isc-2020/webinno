@@ -93,8 +93,7 @@ public class User {
                 " name : " + name +
                 " surname : " + surname +
                 " email : " + mail +
-                " password : " + password +
-                " resolutions : " + "todo";
+                " password : " + password;
         return str;
     }
 

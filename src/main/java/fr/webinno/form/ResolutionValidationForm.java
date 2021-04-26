@@ -9,6 +9,13 @@ public class ResolutionValidationForm {
     private long idUser;
     private long idHistorique;
 
+    public ResolutionValidationForm() {
+    }
+
+    public ResolutionValidationForm(long idUser, long idHistorique) {
+        this.idUser = idUser;
+        this.idHistorique = idHistorique;
+    }
 
 
     public long getIdUser() {

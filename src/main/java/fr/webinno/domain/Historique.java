@@ -1,16 +1,9 @@
 package fr.webinno.domain;
 
-import fr.webinno.repository.HistoriqueRepository;
-import fr.webinno.service.HistoriqueImpl;
-import fr.webinno.service.HistoriqueService;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Calendar;
 
-import org.joda.time.DateTime;
-
-import javax.persistence.*;
 import java.util.Date;
 
 @Entity
