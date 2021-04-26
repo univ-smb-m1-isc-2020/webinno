@@ -11,6 +11,9 @@
 <body>
     <h1>NewYearResolution</h1>
 
+    <a href="/oauth2/authorization/google">Log in with google</a>
+
+
     <form method="post" th:action="@{/tryLogin}" th:objet="${loginForm}">
         <label for="userName">User name</label>
         <input type="text" name="userName" id="userName" placeholder="Your Login" value="Gallet">

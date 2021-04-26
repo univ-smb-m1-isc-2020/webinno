@@ -5,6 +5,15 @@ public class LoginForm {
 
     private String password;
 
+    private String[] rememberMe;
+
+    public String[] getRememberMe() {
+        return rememberMe;
+    }
+
+    public void setRememberMe(String[] rememberMe) {
+        this.rememberMe = rememberMe;
+    }
 
     public String getUserName() {
         return userName;

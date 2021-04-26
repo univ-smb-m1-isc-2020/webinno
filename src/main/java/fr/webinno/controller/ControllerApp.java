@@ -1,6 +1,7 @@
 package fr.webinno.controller;
 
 
+
 import fr.webinno.domain.Historique;
 import fr.webinno.domain.User;
 import fr.webinno.domain.UserResolution;
@@ -18,21 +19,20 @@ import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.sql.Array;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.time.LocalDate;
-import java.time.Period;
+
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 @Controller
 public class ControllerApp {
@@ -50,16 +50,15 @@ public class ControllerApp {
     }
 
     @GetMapping("*")
-    public String index(Model model, HttpSession session){
+    public String index(Model model, HttpSession session, @CookieValue(value = "user",defaultValue = "null") String usercookie){
+        if(!usercookie.equals("null") && session.getAttribute("user")==null){
+            var usr = userService.getUserById(Integer.parseInt(usercookie));
+            session.setAttribute("user",usr.get());
+            System.err.println(session.getAttribute("user").toString());
+        }
+
         Map userResolutions = new HashMap();
         Map effectif = new HashMap();
-
-
-        ////////////////////////////////////////////////////////////
-        //                         IMPORTANT                      //
-        //à mettre dans le login pour garder l'utilisateur courant//
-        ////////////////////////////////////////////////////////////
-        //session.setAttribute("idusergen",2);
 
 
         Map pourcentage = new HashMap();
@@ -145,7 +144,7 @@ public class ControllerApp {
                 }
             }
 
-            String p = "0%";;
+            String p = "0%";
             if(nbTotal > 0) {
                 p = "" + ((int) ((float) nbReussit / nbTotal * 100.0)) + "%";
             }
@@ -158,6 +157,7 @@ public class ControllerApp {
         model.addAttribute("resolutions",resolutions);
         model.addAttribute("pourcentage",pourcentage);
         return "index";
+
     }
 
     @GetMapping("/addResolution")
@@ -168,7 +168,6 @@ public class ControllerApp {
 
         //On recupère notre utilisateur
         User user = (User) session.getAttribute("user");
-
         List<UserResolution> mesRes = userResolutionService.getAllUserResolutionByUser(user);
         List<Resolution> resolutionsHasard = new ArrayList<Resolution>();
         List<Long> idres = new ArrayList<Long>();
@@ -244,17 +243,21 @@ public class ControllerApp {
         //Ajout de la user_resolution dans la BDD (on estime que la personne qui crée la résolution la prend imédiatement)
         userResolutionService.addUserResolution(new UserResolution(addResolutionForm.getFrequence(),addResolutionForm.getNb_occurences(),user,r));
 
-        return index(model,session);
+        return index(model,session,user.getIdUser().toString());
     }
 
     @GetMapping("/myResolutions")
     public String myResolutions(Model model,HttpSession session){
 
+
         //On recupère notre utilisateur et ses résolutions
         User user = (User) session.getAttribute("user");
+
+
         List<UserResolution> mesRes = userResolutionService.getAllUserResolutionByUser(user);
 
         Map frequence = new HashMap();
+        Map pourcentage = new HashMap();
         List<Resolution> resolutions = new ArrayList<Resolution>();
 
         for(int i=0;i<mesRes.size();i++){
@@ -262,10 +265,66 @@ public class ControllerApp {
 
             String freq = mesRes.get(i).getNbOccurence() + " fois / " + mesRes.get(i).getFrequence();
             frequence.put(mesRes.get(i).getResolution().getIdResolution(),freq.toLowerCase(Locale.ROOT));
+
+
+            List<String> dates = new ArrayList<String>();
+
+            DateTime date = new DateTime();
+
+
+
+            if (mesRes.get(i).getFrequence() == Frequence.JOUR) {
+
+                dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+
+            } else if (mesRes.get(i).getFrequence() == Frequence.SEMAINE) {
+                dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+
+                int days = Days.daysBetween(date, date.minusWeeks(1)).getDays();
+                for (int j = days + 1; j < 0; j++) {
+                    date = date.minusDays(1);
+                    dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                }
+
+            } else if (mesRes.get(i).getFrequence() == Frequence.MOIS) {
+                dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                int days = Days.daysBetween(date, date.minusMonths(1)).getDays();
+                for (int j = days + 1; j < 0; j++) {
+                    date = date.minusDays(1);
+                    dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                }
+
+            } else if (mesRes.get(i).getFrequence() == Frequence.ANNEE) {
+                dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                int days = Days.daysBetween(date, date.minusYears(1)).getDays();
+                for (int j = days + 1; j < 0; j++) {
+                    date = date.minusDays(1);
+                    dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                }
+            }
+
+
+            int cptOccur = 0;
+            for (int j = 0; j < mesRes.get(i).getHistoriques().size(); j++) {
+                DateTime db = new DateTime(mesRes.get(i).getHistoriques().get(j).getDate());
+                if (dates.contains(db.getDayOfMonth() + "-" + db.getMonthOfYear() + "-" + db.getYear())) {
+                    if (mesRes.get(i).getHistoriques().get(j).isDone()) {
+                        cptOccur++;
+                    }
+
+                }
+            }
+
+
+            String p = "" + ((int) ((float) cptOccur / mesRes.get(i).getNbOccurence() * 100.0)) + "%";
+
+
+            pourcentage.put(mesRes.get(i).getResolution().getIdResolution(),p);
         }
 
         model.addAttribute("resolutions",resolutions);
         model.addAttribute("frequence",frequence);
+        model.addAttribute("pourcentage",pourcentage);
         model.addAttribute("userResolutionForm",new SelectResolutionForm());
         return "myResolutions";
     }
@@ -316,7 +375,7 @@ public class ControllerApp {
 
         userResolutionService.addUserResolution(ur);
 
-        return index(model,session);
+        return index(model,session,user.get().getIdUser().toString());
     }
 
 
@@ -327,21 +386,28 @@ public class ControllerApp {
     }
 
     @GetMapping("/logout")
-    public String logout(Model model,HttpSession session){
-        session.removeAttribute("user");
+    public String logout(Model model,HttpSession session,HttpServletResponse reponse){
 
-        return index(model,session);
+        session.removeAttribute("user");
+        Cookie cookie = new Cookie("user",null);
+        cookie.setMaxAge(0);
+
+        reponse.addCookie(cookie);
+
+        //renvoi vers la page d'accueil
+        return index(model, session,"null");
+
     }
 
 
     @PostMapping("/tryLogin")
-    public String tryLogin(@ModelAttribute LoginForm loginForm, Model model, HttpSession session){
+    public String tryLogin(@ModelAttribute LoginForm loginForm, Model model, HttpSession session, HttpServletResponse reponse){
         // 1 - Récupération donnée du formulaire
         var user = userService.getUserByName(loginForm.getUserName());
         var password = loginForm.getPassword();
 
         if(user == null){
-            return index(model,session);
+            return index(model,session,user.getIdUser().toString());
         }
 
         // 2 - Vérification pour la connexion
@@ -350,10 +416,17 @@ public class ControllerApp {
             var resolutions = resolutionService.getAllResolutions();
             model.addAttribute("resolutions", resolutions);
             session.setAttribute("user",user);
+
+            if(loginForm.getRememberMe() != null){
+                Cookie cookie = new Cookie("user",user.getIdUser().toString());
+                cookie.setMaxAge(7200);
+                reponse.addCookie(cookie);
+            }
+
             return myResolutions(model, session);
         }
         else{
-            return index(model,session);
+            return index(model,session,"null");
         }
     }
 
