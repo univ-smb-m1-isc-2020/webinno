@@ -378,6 +378,19 @@ public class ControllerApp {
         return index(model,session,user.get().getIdUser().toString());
     }
 
+    @GetMapping("/createAccount")
+    public String createAccount(Model model){
+        model.addAttribute(new CreateAccountForm());
+        return "createAccount";
+    }
+
+    @PostMapping("/createNewAccount")
+    public String createNewAccount(@ModelAttribute CreateAccountForm createAccountForm,Model model){
+
+        User user = new User(createAccountForm.getNom(),createAccountForm.getPrenom(),createAccountForm.getMail(),createAccountForm.getPass());
+        userService.addUser(user);
+        return login(model);
+    }
 
     @GetMapping("/login")
     public String login(Model model){
