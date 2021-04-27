@@ -33,6 +33,8 @@ public class ControllerApp {
 
     @GetMapping("*")
     public String index(Model model){
+
+        System.out.println("Test Signin");
         return "index";
     }
 
