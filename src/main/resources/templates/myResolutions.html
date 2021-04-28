@@ -9,7 +9,7 @@
         <h1>NewYearResolution</h1>
 
         <a th:if="${session.user}!=null" th:href="@{/logout}">Sign out</a>
-        <a th:if="${session.user}!=null" th:href="@{/index}">Accueil</a>
+        <a th:if="${session.user}!=null" th:href="@{/}">Accueil</a>
         <a th:if="${session.user}!=null" th:href="@{/addResolution}">Prendre de nouvelles Résolutions</a>
     </header>
     <div>

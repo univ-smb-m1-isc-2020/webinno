@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @EnableWebSecurity
 public class config extends WebSecurityConfigurerAdapter {
+       /*
         @Autowired
         PasswordEncoder passwordEncoder;
 
@@ -33,7 +34,7 @@ public class config extends WebSecurityConfigurerAdapter {
         public PasswordEncoder passwordEncoder() {
             return new BCryptPasswordEncoder();
         }
-
+*/
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http.authorizeRequests()
@@ -44,15 +45,31 @@ public class config extends WebSecurityConfigurerAdapter {
                     .loginPage("/login")
                     .defaultSuccessUrl("/tryLogin")
                     .failureUrl("/login")
-                    .permitAll()
                     .and()
                     .logout()
                     .logoutUrl("/logout")
-                    .permitAll()
+                    .logoutSuccessUrl("/")
                     .and()
                     .csrf()
                     .disable();
         }
+    @Autowired
+    @Qualifier("customUserDetailsService")
+    private UserDetailsService customUserDetailsService;
 
+    @Override
+    protected void configure(AuthenticationManagerBuilder authManagerBuilder) throws Exception {
+        authManagerBuilder.userDetailsService(customUserDetailsService).passwordEncoder(bCryptPasswordEncoder());
+    }
 
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 }

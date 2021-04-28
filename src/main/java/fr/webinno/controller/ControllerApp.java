@@ -52,6 +52,7 @@ public class ControllerApp {
     @GetMapping("/")
     public String index(Model model, HttpSession session, @CookieValue(value = "user",defaultValue = "null") String usercookie){
         if(!usercookie.equals("null") && session.getAttribute("user")==null){
+            System.err.println("cookie");
             var usr = userService.getUserById(Integer.parseInt(usercookie));
             session.setAttribute("user",usr.get());
             System.err.println(session.getAttribute("user").toString());
@@ -402,10 +403,10 @@ public class ControllerApp {
     public String logout(Model model,HttpSession session,HttpServletResponse reponse){
 
         session.removeAttribute("user");
-        Cookie cookie = new Cookie("user",null);
-        cookie.setMaxAge(0);
+        //Cookie cookie = new Cookie("user",null);
+        //cookie.setMaxAge(0);
 
-        reponse.addCookie(cookie);
+        //reponse.addCookie(cookie);
 
         //renvoi vers la page d'accueil
         return index(model, session,"null");
@@ -431,9 +432,9 @@ public class ControllerApp {
             session.setAttribute("user",user);
 
             if(loginForm.getRememberMe() != null){
-                Cookie cookie = new Cookie("user",user.getIdUser().toString());
-                cookie.setMaxAge(7200);
-                reponse.addCookie(cookie);
+                //Cookie cookie = new Cookie("user",user.getIdUser().toString());
+                //cookie.setMaxAge(7200);
+                //reponse.addCookie(cookie);
             }
 
             return myResolutions(model, session);
