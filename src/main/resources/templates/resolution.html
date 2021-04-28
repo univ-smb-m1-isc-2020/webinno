@@ -9,7 +9,7 @@
     <table class="resolutions">
         <thead>
             <tr>
-                <th>Action</th>
+                <th id="action">Action</th>
                 <th>Frequence</th>
                 <th>NombreOcc</th>
             </tr>
@@ -28,14 +28,12 @@
         <thead>
         <tr>
             <th>Jour</th>
-            <th>Etat</th>
             <th>Bouton</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="hist : ${histLastSemaine}">
-            <td th:text="${hist.getDate()}"></td>
-            <td th:text="${hist.isDone()}"></td>
+            <td th:text="${hist.getDate().getDate()} + '/' + ${hist.getDate().getMonth() + 1} + '/' + ${hist.getDate().getYear() - 100}"></td>
             <td>
                 <form action="#" th:action="@{/updateValidation}" th:object="${resolutionValidationForm}" method="post">
                     <input type="hidden" th:value="${user.idUser}" name="idUser">

@@ -2,24 +2,23 @@
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: head"></head>
 <body>
-    <h1>Création d'un nouveau compte</h1>
-
-    <form method="post" th:action="@{/createNewAccount}" th:objet="${createAccountForm}">
-        <label for="nom">Nom</label>
-        <input type="text" id="nom" name="nom">
-
-        <label for="prenom">Prénom</label>
-        <input type="text" id="prenom" name="prenom">
-
-        <label for="mail">Email</label>
-        <input type="text" id="mail" name="mail">
-
-        <label for="pass">Password</label>
-        <input type="password" id="pass" name="pass">
-
-        <input type="submit" value="Créer mon compte">
-
-    </form>
-
+    <div class="signIn">
+        <h2>Sign in</h2>
+        <form method="post" th:action="@{/createNewAccount}" th:objet="${createAccountForm}">
+            <div class="input-group input-group-lg">
+                <input type="text" class="form-control" placeholder="Nom" id="nom" name="nom">
+            </div>
+            <div class="input-group input-group-lg">
+                <input type="text" class="form-control" placeholder="Prenom" id="prenom" name="prenom">
+            </div>
+            <div class="input-group input-group-lg">
+                <input type="text" class="form-control" placeholder="Mail" id="mail" name="mail">
+            </div>
+            <div class="input-group input-group-lg">
+                <input type="password" class="form-control" placeholder="Password" id="pass" name="pass">
+            </div>
+            <input type="submit" class="float" value="Créer mon compte">
+        </form>
+    </div>
 </body>
 </html>

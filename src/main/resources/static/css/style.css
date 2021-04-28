@@ -24,7 +24,7 @@ body{
     border-radius: 5px;
     margin: 50px auto;
     box-shadow: 0px 0px 5px rgba(0,0,0,0.3);
-    width: 70%;
+    min-width: 70%;
 }
 
 .resolutions thead {
@@ -37,7 +37,7 @@ body{
     font-weight: 400;
     color: #ffffff;
     text-shadow: 1px 1px 0px rgba(0,0,0,0.5);
-    text-align: left;
+    text-align: center;
     padding: 20px;
     background-color: #646f7f;
     border-top: 1px solid #858d99;
@@ -55,6 +55,7 @@ border-top-right-radius(5px);
     font-family: 'Open Sans', sans-serif;
     font-weight: 400;
     color: #5f6062;
+    text-align: center;
     padding: 20px;
     border-bottom: 1px solid #e0e0e0;
 }
@@ -85,6 +86,10 @@ border-top-right-radius(5px);
     text-shadow: 0 1px 0 #ffffff;
 }
 
+.resolutions thead #action{
+    min-width:200px;
+}
+
 #welcome {
     text-align: center;
 }
@@ -96,4 +101,189 @@ h2{
 nav {
     background: #161B22;
     font-width: 600;
+}
+
+table input[type=submit] {
+    border: 3px solid rgba(50, 50, 255, 1);
+    color: rgba(0,0,0,1);
+    background: rgba(50,50,2500,0.4);
+    font-weight:600;
+    min-width: 100px;
+    text-transform: uppercase;
+    border-radius: 8px;
+    cursor: pointer;
+    transition-duration: 0.1s;
+}
+
+.signIn {
+    padding: 15px;
+    width: 400px;
+    min-height: 400px;
+    margin: 2% auto 0 auto;
+    text-align: center;
+    margin-top: 1%;
+}
+
+.signIn h2 {
+    font-size: 3em;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.7);
+    display: inline-block;
+    padding-bottom: 5px;
+    text-shadow: 1px 1px 3px #23203b;
+}
+
+.signIn form .input-group{
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.signIn form .input-group:last-of-type{
+    border-top: none;
+}
+
+.signIn form input.form-control{
+    display: block;
+    width: auto;
+    height: auto;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background: none;
+    border-radius: 0px;
+    padding: 10px;
+    font-size: 1.6em;
+    width: 100%;
+    background: transparent;
+    color: rgba(171,158,149, 0.9);
+}
+
+.signIn form input.form-control:focus {
+    border: none;
+}
+
+.signIn form input[type=submit] {
+    margin-top: 2em;
+    width: 150px;
+    height:50px;
+    background-color:rgb(19, 20, 22);
+    overflow:hidden;
+    font-family: Lato, "Trebuchet MS", "Verdana", "sans-serif";
+    border-radius:180px;
+    position:relative;
+    background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
+    cursor:pointer;
+    line-height:12px;
+    border: none;
+}
+
+
+.signIn form input[type=submit]:before {
+    content:'';
+    z-index:1;
+    position:absolute;
+    display:block;
+    width:80%;
+    height:70%;
+    top:15%;
+    left:10%;
+    transition: 0.3s opacity ease-in-out;
+    filter:blur(15px);
+    opacity:0;
+    background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
+}
+
+
+.signIn form input[type=submit]:hover:before {
+    opacity:1;
+    transition: 0.3s opacity ease-in-out;
+    filter:blur(25px);
+    background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
+}
+
+
+.logIn {
+    padding: 15px;
+    width: 400px;
+    min-height: 400px;
+    margin: 2% auto 0 auto;
+    text-align: center;
+    margin-top: 1%;
+}
+
+.logIn h2 {
+    font-size: 3em;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.7);
+    display: inline-block;
+    padding-bottom: 5px;
+    text-shadow: 1px 1px 3px #23203b;
+}
+
+.logIn form .input-group{
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logIn form .input-group:last-of-type{
+    border-top: none;
+}
+
+.logIn form input.form-control{
+    display: block;
+    width: auto;
+    height: auto;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background: none;
+    border-radius: 0px;
+    padding: 10px;
+    font-size: 1.6em;
+    width: 100%;
+    background: transparent;
+    color: rgba(171,158,149, 0.9);
+}
+
+.logIn form input.form-control:focus {
+    border: none;
+}
+
+.logIn form input[type=submit] {
+    margin-top: 2em;
+    width: 150px;
+    height:50px;
+    background-color:rgb(19, 20, 22);
+    overflow:hidden;
+    font-family: Lato, "Trebuchet MS", "Verdana", "sans-serif";
+    border-radius:180px;
+    position:relative;
+    background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
+    cursor:pointer;
+    line-height:12px;
+    border: none;
+}
+
+
+.logIn form input[type=submit]:before {
+    content:'';
+    z-index:1;
+    position:absolute;
+    display:block;
+    width:80%;
+    height:70%;
+    top:15%;
+    left:10%;
+    transition: 0.3s opacity ease-in-out;
+    filter:blur(15px);
+    opacity:0;
+    background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
+}
+
+
+.logIn form input[type=submit]:hover:before {
+    opacity:1;
+    transition: 0.3s opacity ease-in-out;
+    filter:blur(25px);
+    background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8, #1098ad, #07b39b, #6fba82);
 }

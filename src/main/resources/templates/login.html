@@ -1,33 +1,24 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Connexion</title>
-    <base href="/"/>
-    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
-    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
-</head>
+<head th:replace="fragments/header :: head"></head>
 <body>
-    <h1>NewYearResolution</h1>
+    <div class="logIn">
+        <h2>NewYearResolution</h2>
+        <form method="post" th:action="@{/tryLogin}" th:objet="${loginForm}">
+            <div class="input-group input-group-lg">
+                <input type="text" class="form-control" name="userName" id="userName" placeholder="User name" value="Gallet">
+            </div>
+            <div class="input-group input-group-lg">
+                <input type="password" class="form-control" name="password" id="password" placeholder="Your Password" value="123456789">
+            </div>
 
-    <a href="/oauth2/authorization/google">Log in with google</a>
+            <input type="submit" class="float" value="Se connecter">
 
+            <input type="checkbox" name="rememberMe" id="rememberMe">
+            <label for="rememberMe">Remember me</label>
+        </form>
+    </div>
 
-    <form method="post" th:action="@{/tryLogin}" th:objet="${loginForm}">
-        <label for="userName">User name</label>
-        <input type="text" name="userName" id="userName" placeholder="Your Login" value="Gallet">
-
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password" placeholder="Your Password" value="123456789">
-
-        <input type="submit" value="Se connecter">
-
-        <input type="checkbox" name="rememberMe" id="rememberMe">
-        <label for="rememberMe">Remember me</label>
-    </form>
-
-    <p>Vous n'avez pas de compte ? </p>
     <a th:href="@{/createAccount}">Créer un compte</a>
 </body>
 </html>
