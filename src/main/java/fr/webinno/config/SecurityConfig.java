@@ -1,8 +1,6 @@
 package fr.webinno.config;
 
-import fr.webinno.security.FacebookConnectionSignup;
-import fr.webinno.security.FacebookSignInAdapter;
-import fr.webinno.security.MyUserDetailsService;
+import fr.webinno.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     String appId;
 
     @Autowired
-    private MyUserDetailsService userDetailsService;
+    private UserDetailsService userDetailsService;
 
     @Autowired
     private FacebookConnectionSignup facebookConnectionSignup;
@@ -51,11 +49,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/login*","/signin/**","/signup/**").permitAll()
+                .antMatchers("/signin/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage("/login").permitAll()
-                .defaultSuccessUrl("/login")
+                .defaultSuccessUrl("/")
                 .and()
                 .logout();
     } // @formatter:on
@@ -72,6 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private ConnectionFactoryLocator connectionFactoryLocator() {
         ConnectionFactoryRegistry registry = new ConnectionFactoryRegistry();
         registry.addConnectionFactory(new FacebookConnectionFactory(appId, appSecret));
+        System.out.println(registry.toString());
         return registry;
     }
 

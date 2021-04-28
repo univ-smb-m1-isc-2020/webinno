@@ -12,9 +12,7 @@ import fr.webinno.form.UserForm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class ControllerApp {
@@ -36,6 +34,27 @@ public class ControllerApp {
 
         System.out.println("Test Signin");
         return "index";
+    }
+    @GetMapping("/signin/facebook/{id}")
+    public String test(@PathVariable long id, Model model){
+        System.out.println("test " + id);
+        var user = userService.getUserById(id).get();
+        System.out.println(user);
+        model.addAttribute("user", user);
+
+        // Récupération de ces Résolutions de l'user
+        var user_resolutions = userResolutionService.getAllUserResolutionByUser(user);
+        model.addAttribute("user_resolutions", user_resolutions);
+
+
+        //3 - Récupérations des resolutions TODO prendre uniquement celle qu'il ne possede pas déja
+        var resolutions = resolutionService.getAllResolutions();
+        model.addAttribute("resolutions", resolutions);
+
+        // Envoie du form
+        model.addAttribute("selectResolutionForm", new SelectResolutionForm());
+
+        return "user";
     }
 
     @GetMapping("/login")
