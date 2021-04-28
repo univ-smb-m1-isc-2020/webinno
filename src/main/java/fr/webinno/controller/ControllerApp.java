@@ -246,6 +246,7 @@ public class ControllerApp {
         return index(model,session,user.getIdUser().toString());
     }
 
+    /*
     @GetMapping("/myResolutions")
     public String myResolutions(Model model,HttpSession session){
 
@@ -329,16 +330,19 @@ public class ControllerApp {
         return "myResolutions";
     }
 
+     */
+
+    /*
     @PostMapping("/addUserResolutionForm")
-    public String addUserResolutionForm(@ModelAttribute SelectResolutionForm selectResolutionForm, Model model){
+    public String addUserResolutionForm(@ModelAttribute UserResolutionForm userResolutionForm, Model model){
         //1 - Récupération de la résolution
-        var resolution = resolutionService.getById(selectResolutionForm.getIdResolution());
+        var resolution = resolutionService.getById(userResolutionForm.getIdResolution());
         if(!resolution.isPresent()){
             return "login";
         }
 
         //2 - Récupération de l'user
-        var user = userService.getUserById(selectResolutionForm.getIdUser());
+        var user = userService.getUserById(userResolutionForm.getIdUser());
         if(!user.isPresent()){
             return "login";
         }
@@ -350,8 +354,9 @@ public class ControllerApp {
 
         return "addUserResolutionForm";
     }
+*/
 
-
+    /*
     @PostMapping("/addUserResolution")
     public String addUserResolution(@ModelAttribute AddUserResolutionForm addUserResolutionForm, Model model,HttpSession session){
 
@@ -376,7 +381,7 @@ public class ControllerApp {
         userResolutionService.addUserResolution(ur);
 
         return index(model,session,user.get().getIdUser().toString());
-    }
+    }*/
 
     @GetMapping("/createAccount")
     public String createAccount(Model model){
@@ -436,7 +441,7 @@ public class ControllerApp {
                 reponse.addCookie(cookie);
             }
 
-            return myResolutions(model, session);
+            return user(model, session);
         }
         else{
             return index(model,session,"null");
@@ -444,12 +449,68 @@ public class ControllerApp {
     }
 
 
-    public String user(Model model, User user){
-        model.addAttribute("user", user);
+    public String user(Model model, HttpSession session){
+        //On recupère notre utilisateur et ses résolutions
+        User user = (User) session.getAttribute("user");
 
-        var user_resolutions = userResolutionService.getAllUserResolutionByUser(user);
-        model.addAttribute("user_resolutions", user_resolutions);
+        List<UserResolution> mesRes = userResolutionService.getAllUserResolutionByUser(user);
 
+        Map pourcentage = new HashMap();
+
+        for(int i=0;i<mesRes.size();i++){
+
+            List<String> dates = new ArrayList<String>();
+            DateTime date = new DateTime();
+
+            if (mesRes.get(i).getFrequence() == Frequence.JOUR) {
+                dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+            }
+
+            else if (mesRes.get(i).getFrequence() == Frequence.SEMAINE) {
+                dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+
+                int days = Days.daysBetween(date, date.minusWeeks(1)).getDays();
+                for (int j = days + 1; j < 0; j++) {
+                    date = date.minusDays(1);
+                    dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                }
+            }
+
+            else if (mesRes.get(i).getFrequence() == Frequence.MOIS) {
+                dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                int days = Days.daysBetween(date, date.minusMonths(1)).getDays();
+                for (int j = days + 1; j < 0; j++) {
+                    date = date.minusDays(1);
+                    dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                }
+            }
+
+            else if (mesRes.get(i).getFrequence() == Frequence.ANNEE) {
+                dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                int days = Days.daysBetween(date, date.minusYears(1)).getDays();
+                for (int j = days + 1; j < 0; j++) {
+                    date = date.minusDays(1);
+                    dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                }
+            }
+
+            int cptOccur = 0;
+            for (int j = 0; j < mesRes.get(i).getHistoriques().size(); j++) {
+                DateTime db = new DateTime(mesRes.get(i).getHistoriques().get(j).getDate());
+                if (dates.contains(db.getDayOfMonth() + "-" + db.getMonthOfYear() + "-" + db.getYear())) {
+                    if (mesRes.get(i).getHistoriques().get(j).isDone()) {
+                        cptOccur++;
+                    }
+                }
+            }
+
+
+            String p = "" + ((int) ((float) cptOccur / mesRes.get(i).getNbOccurence() * 100.0)) + "%";
+            pourcentage.put(mesRes.get(i).getResolution().getIdResolution(),p);
+        }
+
+        model.addAttribute("user_resolutions",mesRes);
+        model.addAttribute("pourcentage",pourcentage);
         model.addAttribute("userResolutionForm", new UserResolutionForm());
         return "user";
     }
