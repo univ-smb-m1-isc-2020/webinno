@@ -21,10 +21,15 @@ public class FacebookConnectionSignup implements ConnectionSignUp {
     public String execute(Connection<?> connection) {
         System.out.println("signup === ");
         final User user = new User();
-        user.setName(connection.getDisplayName());
-        user.setPassword(randomAlphabetic(8));
-        userRepository.save(user);
-        return user.getName();
+        if(userRepository.findOneByName(connection.getDisplayName()) != null){
+            return user.getName();
+        } else{
+            user.setName(connection.getDisplayName());
+            user.setPassword(randomAlphabetic(8));
+            userRepository.save(user);
+            return user.getName();
+        }
+
     }
 
 }
