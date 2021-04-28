@@ -49,7 +49,7 @@ public class ControllerApp {
         this.historiqueService = historiqueService;
     }
 
-    @GetMapping("*")
+    @GetMapping("/")
     public String index(Model model, HttpSession session, @CookieValue(value = "user",defaultValue = "null") String usercookie){
         if(!usercookie.equals("null") && session.getAttribute("user")==null){
             var usr = userService.getUserById(Integer.parseInt(usercookie));
