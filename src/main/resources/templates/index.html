@@ -1,37 +1,29 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Accueil</title>
-</head>
+<head th:replace="fragments/header :: head"></head>
 <body>
-<header>
-    <h1>NewYearResolution</h1>
-    <a th:if="${session.user}==null" th:href="@{/login}">Sign in</a>
-    <a th:if="${session.user}!=null" th:href="@{/logout}">Sign out</a>
-    <a th:if="${session.user}!=null" th:href="@{/myResolutions}">Mes Résolutions</a>
-    <a th:if="${session.user}!=null" th:href="@{/addResolution}">Prendre de nouvelles Résolutions</a>
-</header>
+    <nav th:replace="fragments/nav :: nav"></nav>
 
+    <h2>Liste de toutes les résolutions de la plateforme :</h2>
 
-<h1>Liste de toutes les résolutions de la plateforme :</h1>
+    <table class="resolutions">
+        <thead>
+            <tr>
+                <th>Action</th>
+                <th>Nombre d'inscrit</th>
+                <th>Pourcentage de réussite sur la dernière période</th>
+            </tr>
+        </thead>
 
-<table>
-    <tr>
-        <th>Id</th>
-        <th>Action</th>
-        <th>Nombre d'inscrit</th>
-        <th>Pourcentage de réussite sur la dernière période</th>
-    </tr>
+        <tbody>
+            <tr th:each="resolution : ${resolutions}">
+                <td th:text="${resolution.action}">Action</td>
+                <td th:text="${effectif.get(resolution.idResolution)}">NbInscrits</td>
+                <td th:text="${pourcentage.get(resolution.idResolution)}">Pourcentage</td>
+            </tr>
+        </tbody>
+    </table>
 
-    <tr th:each="resolution : ${resolutions}">
-        <td th:text="${resolution.idResolution}">IdResolution</td>
-        <td th:text="${resolution.action}">Action</td>
-        <td th:text="${effectif.get(resolution.idResolution)}">NbInscrits</td>
-        <td th:text="${pourcentage.get(resolution.idResolution)}">Pourcentage</td>
-
-    </tr>
-</table>
-
+    <div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>

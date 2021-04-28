@@ -307,10 +307,14 @@ public class ControllerApp {
         }
     }
 
-
+    @GetMapping("/user")
     public String user(Model model, HttpSession session){
         //On recupère notre utilisateur et ses résolutions
         User user = (User) session.getAttribute("user");
+
+        if(user == null){
+            return index(model, session, null);
+        }
 
         List<UserResolution> mesRes = userResolutionService.getAllUserResolutionByUser(user);
 
