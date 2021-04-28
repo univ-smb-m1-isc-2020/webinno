@@ -58,7 +58,8 @@ body {
 
 .graph {
     padding: 20px;
-    border: 1px #e1e4e8 solid;
+    border: 1px #3a3a3a solid;
+    border-radius: 15px 15px 0 0;
     margin: 20px;
 }
 
@@ -67,15 +68,16 @@ body {
 }
 
 .squares li {
-    background-color: #ebedf0;
+    background-color: #c9d1;
+    border-radius:3px;
 }
 
 .squares li[data-level="1"] {
-    background-color: #7bc96f;
+    background-color: #3fb950;
 }
 
 .squares li[data-level="2"] {
-    background-color: #ffffff;
+    background-color: #0D1117;
 }
 
 

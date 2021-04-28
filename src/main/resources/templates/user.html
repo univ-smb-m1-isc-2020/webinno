@@ -4,39 +4,35 @@
 <head th:replace="fragments/header :: head"></head>
 <body>
     <nav th:replace="fragments/nav :: nav"></nav>
-    <div>
-        <h1>User :</h1>
-        <p th:text="${user.name}"></p>
-        <p th:text="${user.surname}"></p>
-        <p th:text="${user.mail}"></p>
+    <div id="welcome">
+        <h1 th:text="'Bienvenue ' + ${user.name} + ' ' + ${user.surname}">Bienvenue</h1>
     </div>
 
     <div>
-        <h1>Liste de ses résolutions :</h1>
-        <table>
-            <tr>
-                <th>Action</th>
-                <th>Frequence</th>
-                <th>Nb_occurences</th>
-                <th>done sur la semaine TODO</th>
-                <th>Voir</th>
-            </tr>
-
-            <tr th:each="user_resolution : ${user_resolutions}">
-                <td th:text="${user_resolution.resolution.action}" :>Action</td>
-                <td th:text="${user_resolution.frequence}">Frequence</td>
-                <td th:text="${user_resolution.nbOccurence}">Nb_occurences</td>
-                <td>
-                    TODO
-                </td>
-                <td>
-                    <form action="#" th:action="@{/selectUserResolution}" th:object="${userResolutionForm}" method="post">
-                        <input type="hidden" th:value="${user.idUser}" name="idUser"/>
-                        <input type="hidden" th:value="${user_resolution.resolution.idResolution}" name="idResolution"/>
-                        <input th:type="submit" value="Submit">
-                    </form>
-                </td>
-            </tr>
+        <h2>Voici vos résolutions</h2>
+        <table class="resolutions">
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Frequence</th>
+                    <th>Nb_occurences</th>
+                    <th>Voir</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="user_resolution : ${user_resolutions}">
+                    <td th:text="${user_resolution.resolution.action}" :>Action</td>
+                    <td th:text="${user_resolution.frequence}">Frequence</td>
+                    <td th:text="${user_resolution.nbOccurence}">Occurences</td>
+                    <td>
+                        <form action="#" th:action="@{/selectUserResolution}" th:object="${userResolutionForm}" method="post">
+                            <input type="hidden" th:value="${user.idUser}" name="idUser"/>
+                            <input type="hidden" th:value="${user_resolution.resolution.idResolution}" name="idResolution"/>
+                            <input th:type="submit" value="Submit">
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
         </table>
     </div>
     <div th:replace="fragments/footer :: footer"></div>

@@ -1,30 +1,58 @@
 <!DOCTYPE html>
-<html  xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Resolution</title>
-    <link href = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel = "stylesheet">
-    <link rel="stylesheet" href="css/graph.css">
-</head>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: head"></head>
 <body>
-    <h1>Détail d'une résolution d'un user</h1>
+    <nav th:replace="fragments/nav :: nav"></nav>
+    <h2>Détail d'une résolution d'un user</h2>
 
-    <table>
-        <tr>
-            <th>Id</th>
-            <th>Action</th>
-            <th>Frequence</th>
-            <th>NombreOcc</th>
-        </tr>
-        <tr>
-            <td th:text="${user_resolution.resolution.idResolution}"></td>
-            <td th:text="${user_resolution.resolution.action}"></td>
-            <td th:text="${user_resolution.frequence}"></td>
-            <td th:text="${user_resolution.nbOccurence}"></td>
-        </tr>
+    <table class="resolutions">
+        <thead>
+            <tr>
+                <th>Action</th>
+                <th>Frequence</th>
+                <th>NombreOcc</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td th:text="${user_resolution.resolution.action}"></td>
+                <td th:text="${user_resolution.frequence}"></td>
+                <td th:text="${user_resolution.nbOccurence}"></td>
+            </tr>
+        </tbody>
     </table>
 
-    <h1>Time line</h1>
+    <h2>Valider votre résolution !</h2>
+    <table class="resolutions">
+        <thead>
+        <tr>
+            <th>Jour</th>
+            <th>Etat</th>
+            <th>Bouton</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="hist : ${histLastSemaine}">
+            <td th:text="${hist.getDate()}"></td>
+            <td th:text="${hist.isDone()}"></td>
+            <td>
+                <form action="#" th:action="@{/updateValidation}" th:object="${resolutionValidationForm}" method="post">
+                    <input type="hidden" th:value="${user.idUser}" name="idUser">
+                    <input type="hidden" th:value="${hist.getIdHistorique()}" name="idHistorique">
+                    <div th:if="${hist.isDone()}">
+                        <input th:type="submit" value="invalider">
+                    </div>
+                    <div th:unless="${hist.isDone()}">
+                        <input th:type="submit" value="valider">
+                    </div>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>Time Line</h2>
     <div class="graph">
         <ul class="months">
             <li>Jan</li>
@@ -54,34 +82,12 @@
         </ul>
     </div>
 
-    <h1>Modification sur une semaine</h1>
-    <table>
-        <tr>Id</tr>
-        <tr>Jour</tr>
-        <tr>Etat</tr>
-        <tr>Bouton</tr>
 
-        <tr th:each="hist : ${histLastSemaine}">
-            <td th:text="${hist.idHistorique}"></td>
-            <td th:text="${hist.getDate()}"></td>
-            <td th:text="${hist.isDone()}"></td>
-            <td>
-                <form action="#" th:action="@{/updateValidation}" th:object="${resolutionValidationForm}" method="post">
-                    <input type="hidden" th:value="${user.idUser}" name="idUser">
-                    <input type="hidden" th:value="${hist.getIdHistorique()}" name="idHistorique">
-                    <div th:if="${hist.isDone()}">
-                        <input th:type="submit" value="invalider">
-                    </div>
-                    <div th:unless="${hist.isDone()}">
-                        <input th:type="submit" value="valider">
-                    </div>
-                </form>
-            </td>
-        </tr>
-    </table>
 
     <script src = "https://code.jquery.com/jquery-3.4.1.min.js"> </script>
     <script src = "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"> </script>
     <script src = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js"> </script>
+
+    <div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>
