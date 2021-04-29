@@ -348,7 +348,7 @@ public class ControllerApp {
         var password = loginForm.getPassword();
 
         if(user == null){
-            return index(model,session,user.getIdUser().toString());
+            return index(model,session,"null");
         }
 
         // 2 - Vérification pour la connexion
