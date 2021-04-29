@@ -557,4 +557,33 @@ public class ControllerApp {
         cal.set(1,1,annee);
         return cal.getActualMaximum(Calendar.DAY_OF_YEAR);
     }
+
+
+
+
+    @PostMapping("/addUserResolution")
+    public String addUserResolution(@ModelAttribute AddUserResolutionForm addUserResolutionForm, Model model,HttpSession session){
+
+        // 1 - Récupération de l'user
+        var user = userService.getUserById(addUserResolutionForm.getIdUser());
+        if(!user.isPresent()){
+            System.err.println("[ControllerApp] /addUserResolution, user not found !");
+            return "login";
+        }
+
+        // 2 - Récupération de la résolution
+        var resolution = resolutionService.getById(addUserResolutionForm.getIdResolution());
+        if(!resolution.isPresent()){
+            System.err.println("[ControllerApp] /addUserResolution, resolution not found !");
+            return "login";
+        }
+
+        // 3 - Création de l'UserResolution
+        UserResolution ur = new UserResolution(addUserResolutionForm.getFrequence(), addUserResolutionForm.getNb_occurences(), user.get(), resolution.get() );
+        System.out.println("Creation de la nouvelle UserResolution : " + ur);
+
+        userResolutionService.addUserResolution(ur);
+
+        return index(model,session,user.get().getIdUser().toString());
+    }
 }
