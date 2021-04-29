@@ -58,7 +58,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/");
     } // @formatter:on
     //
-    /*
     @Bean
     // @Primary
     public ProviderSignInController providerSignInController() {
@@ -79,12 +78,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new InMemoryUsersConnectionRepository(connectionFactoryLocator);
     }
 
+    @Autowired
+    @Qualifier("customUserDetailsService")
+    private UserDetailsService customUserDetailsService;
 
     @Override
     protected void configure(final AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService);
-    }*/
+        //auth.userDetailsService(customUserDetailsService).passwordEncoder(bCryptPasswordEncoder());
+    }
 
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+    /*
     @Autowired
     @Qualifier("customUserDetailsService")
     private UserDetailsService customUserDetailsService;
@@ -103,5 +117,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
-    }
+    } */
 }

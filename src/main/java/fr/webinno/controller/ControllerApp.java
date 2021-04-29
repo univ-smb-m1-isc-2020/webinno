@@ -273,7 +273,7 @@ public class ControllerApp {
 
     }
 
-    @GetMapping("/signin/facebook/{id}")
+    /*@GetMapping("/signin/facebook/{id}")
     public String test(@PathVariable long id, Model model){
         System.out.println("test " + id);
         var user = userService.getUserById(id).get();
@@ -292,6 +292,75 @@ public class ControllerApp {
         // Envoie du form
         model.addAttribute("selectResolutionForm", new UserResolutionForm());
 
+        return "user";
+    }*/
+    @GetMapping("/signin/facebook/{id}")
+    public String signInWithFacebook(@PathVariable long id, Model model, HttpSession session){
+        var user = userService.getUserById(id).get();
+        if(user == null){
+            return "index";
+        }
+
+        session.setAttribute("user", user);
+
+        List<UserResolution> mesRes = userResolutionService.getAllUserResolutionByUser(user);
+
+        Map pourcentage = new HashMap();
+
+        for(int i=0;i<mesRes.size();i++){
+
+            List<String> dates = new ArrayList<String>();
+            DateTime date = new DateTime();
+
+            if (mesRes.get(i).getFrequence() == Frequence.JOUR) {
+                dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+            }
+
+            else if (mesRes.get(i).getFrequence() == Frequence.SEMAINE) {
+                dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+
+                int days = Days.daysBetween(date, date.minusWeeks(1)).getDays();
+                for (int j = days + 1; j < 0; j++) {
+                    date = date.minusDays(1);
+                    dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                }
+            }
+
+            else if (mesRes.get(i).getFrequence() == Frequence.MOIS) {
+                dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                int days = Days.daysBetween(date, date.minusMonths(1)).getDays();
+                for (int j = days + 1; j < 0; j++) {
+                    date = date.minusDays(1);
+                    dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                }
+            }
+
+            else if (mesRes.get(i).getFrequence() == Frequence.ANNEE) {
+                dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                int days = Days.daysBetween(date, date.minusYears(1)).getDays();
+                for (int j = days + 1; j < 0; j++) {
+                    date = date.minusDays(1);
+                    dates.add(date.getDayOfMonth() + "-" + date.getMonthOfYear() + "-" + date.getYear());
+                }
+            }
+
+            int cptOccur = 0;
+            for (int j = 0; j < mesRes.get(i).getHistoriques().size(); j++) {
+                DateTime db = new DateTime(mesRes.get(i).getHistoriques().get(j).getDate());
+                if (dates.contains(db.getDayOfMonth() + "-" + db.getMonthOfYear() + "-" + db.getYear())) {
+                    if (mesRes.get(i).getHistoriques().get(j).isDone()) {
+                        cptOccur++;
+                    }
+                }
+            }
+
+            String p = "" + ((int) ((float) cptOccur / mesRes.get(i).getNbOccurence() * 100.0)) + "%";
+            pourcentage.put(mesRes.get(i).getResolution().getIdResolution(),p);
+        }
+
+        model.addAttribute("user_resolutions",mesRes);
+        model.addAttribute("pourcentage",pourcentage);
+        model.addAttribute("userResolutionForm", new UserResolutionForm());
         return "user";
     }
 
